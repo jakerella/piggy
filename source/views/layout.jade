@@ -1,0 +1,26 @@
+!!!5
+html
+  head
+    meta(charset="utf-8")
+    title #{title}
+    
+    block styles
+        link(href="/style/normalize.css", rel="stylesheet", type="text/css")
+        link(href="/style/base.css", rel="stylesheet", type="text/css")
+
+  body(class="page_#{page}")
+
+    header #{title}
+
+    #wrapper
+        div#messages
+        block content
+
+    footer
+        p
+            | The <a href="https://github.com/jakerella/piggy">Piggy</a> app is &copy; 2013 Jordan Kasper, under an <a href="https://github.com/jakerella/piggy/blob/master/LICENSE">MIT license</a>
+
+    block scripts
+        script(src="/script/client.js")
+
+    block pageScript
