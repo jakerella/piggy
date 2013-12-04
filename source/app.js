@@ -30,11 +30,11 @@ app.use(e.handleAppError);
 
 
 // Mongo DB connection info
-// var mongoInfo = mongo.parseConnectionURI(process.env.MONGO_DB_URL);
-// if (!mongoInfo) {
-//     throw new Error("Either no MongoDB connection URL was provided or it was invalid. Please place one in an environment variable (\"MONGO_DB_URL\") with the format: [protocol][username:password@]host[:port]/database");
-// }
-// console.log("Using Mongo URI: " + process.env.MONGO_DB_URL);
+var mongoInfo = mongo.parseConnectionURI(process.env.PIGGY_DB_URL);
+if (!mongoInfo) {
+    throw new Error("Either no MongoDB connection URL was provided or it was invalid. Please place one in an environment variable (\"MONGO_DB_URL\") with the format: [protocol][username:password@]host[:port]/database");
+}
+console.log("Using Mongo URI: " + process.env.PIGGY_DB_URL);
 
 
 // ROUTING

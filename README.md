@@ -8,7 +8,7 @@ A simple account tracker (think 'piggy bank').
 
 ### Database (MongoDB)
 
-You will need a MongoDB instance running somewhere (see the `MONGO_DB_URL` env variable below). You can get a small amount of free space on [MongoLab](https://mongolab.com). Combining that with a single free Heroku web dyno you can easily run this app live without any set up costs. An example of the database connection URI:
+You will need a MongoDB instance running somewhere (see the `PIGGY_DB_URL` env variable below). You can get a small amount of free space on [MongoLab](https://mongolab.com). Combining that with a single free Heroku web dyno you can easily run this app live without any set up costs. An example of the database connection URI:
 
 ```
 mongodb://someuser:theirpass@abcd1234.mongolab.com/my-pt-stats
@@ -26,7 +26,7 @@ git clone git@github.com:jakerella/piggy.git
 cd piggy
 heroku apps:create [optional app name]
 heroku config:set NODE_ENV=[env name, e.g. "development" or "production" (defaults to "production")]
-heroku config:set MONGO_DB_URL=[protocol][username:password@]{host name}[:port]{/database}
+heroku config:set PIGGY_DB_URL=[protocol][username:password@]{host name}[:port]{/database}
 heroku config:add BUILDPACK_URL=https://github.com/mbuchetics/heroku-buildpack-nodejs-grunt.git
 heroku labs:enable user-env-compile -a [app name]
 git push heroku [local branch:]master
@@ -56,7 +56,7 @@ You can run the Piggy app from just about any server. Here are the steps for doi
     * You can also use [MongoLab](http://mongolab.com), just set up an account, add a database, and copy the connection URL
 6. Set these three environment variables:
     * NODE_ENV = [env name, e.g. "development" or "production" (defaults to "production")]
-    * MONGO_DB_URL = [protocol][username:password@]{host name}[:port]{/database}
+    * PIGGY_DB_URL = [protocol][username:password@]{host name}[:port]{/database}
 7. Run `grunt` to build the application (_Make sure you are in the project root directory!_)
 8. Start the app with `npm start` (or `node app/app.js`)
 
