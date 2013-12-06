@@ -27,7 +27,6 @@ cd piggy
 heroku apps:create [optional app name]
 heroku config:set NODE_ENV=[env name, e.g. "development" or "production" (defaults to "production")]
 heroku config:set PIGGY_DB_URL=[protocol][username:password@]{host name}[:port]{/database}
-heroku config:add BUILDPACK_URL=https://github.com/mbuchetics/heroku-buildpack-nodejs-grunt.git
 heroku labs:enable user-env-compile -a [app name]
 git push heroku [local branch:]master
 ```
@@ -57,27 +56,17 @@ You can run the Piggy app from just about any server. Here are the steps for doi
 6. Set these three environment variables:
     * NODE_ENV = [env name, e.g. "development" or "production" (defaults to "production")]
     * PIGGY_DB_URL = [protocol][username:password@]{host name}[:port]{/database}
-7. Run `grunt` to build the application (_Make sure you are in the project root directory!_)
-8. Start the app with `npm start` (or `node app/app.js`)
+7. Start the app with `npm start` (or `node app/app.js`)
 
 _Note that the app will listen on port `5000` by default! You can view the application (locally) at http://localhost:5000_
 
 
-## Usage
-
-### Application Source and Runtime Files
-
-While the source files are all located in the `/source` directory, the runtime application executes out of a built `/app` directory. This directory is created by running the `grunt` command in the root of the project. Any time a change is made to the `source` you will need to run `grunt` again. If desired (but not required), once the project is built you can safely delete the `source` directory on your production server (you should not do this in your development environment).
-
-__WARNING__ Do not edit the files in the `/app` directory, they will be overridden when running `grunt`!
-
-
-### Authorization, Authentication, and Logging In
+## Authorization, Authentication, and Logging In
 
 TODO
 
 
-### Contributing
+## Contributing
 
 This is a project I'm using personally, do not expect any kind of support, but you are welcome to fork this repository and tinker as much as you like.
 
