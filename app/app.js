@@ -46,7 +46,8 @@ app.get("/transaction/add", routes.hasToken, routes.showAddPage);
 
 // POSTs
 app.post("/", routes.index);
-// app.post("/project/:id/stats/edit", routes.hasToken, routes.updateStats);
+app.post("/transaction/add", routes.hasToken, routes.addTransaction);
+
 
 // 404 page
 app.get("*", function(req, res, next) {

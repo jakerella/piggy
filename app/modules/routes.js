@@ -7,34 +7,56 @@ var e = require("./errors.js"),
 
 require("date-utils");
 
-// This is our "auth" check for pages behind the token
-exports.hasToken = function (req, res, next) {
-    // TODO: FOR TESTING
-    next();
-    return;
+var self = {
 
-    // if (req.cookies[COOKIE_NAME]) {
-    //     req.session.token = req.cookies[COOKIE_NAME];
-    //     next();
-    // } else if (req.xhr) {
-    //     res.send(403, { error: "You will need to login before accessing this resource" });
-    // } else {
-    //     res.redirect("/");
-    // }
+    hasToken: function (req, res, next) {
+        // TODO: FOR TESTING
+        next();
+        return;
+
+        // if (req.cookies[COOKIE_NAME]) {
+        //     req.session.token = req.cookies[COOKIE_NAME];
+        //     next();
+        // } else if (req.xhr) {
+        //     res.send(403, { error: "You will need to login before accessing this resource" });
+        // } else {
+        //     res.redirect("/");
+        // }
+    },
+
+    // ----------------- GET Requests --------------- //
+
+    index: function(req, res) {
+        res.render("index", { title: "Home", page: "home" });
+    },
+
+    showAddPage: function(req, res) {
+        res.render("add", {
+            title: "Add Transaction",
+            page: "add-trans",
+            today: (new Date()).toFormat("M/D/YYYY"),
+            categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
+        });
+    },
+
+
+    // ----------------- POST Requests --------------- //
+
+    addTransaction: function(req, res, next) {
+        console.log();
+        
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({
+            transaction: {},
+            user: {}
+        }));
+        return;
+    }
+
+
 };
 
-exports.index = function(req, res) {
-    res.render("index", { title: "Home", page: "home" });
-};
-
-exports.showAddPage = function(req, res) {
-    res.render("add", {
-        title: "Add Transaction",
-        page: "add-trans",
-        today: (new Date()).toFormat("M/D/YYYY"),
-        categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
-    });
-};
+module.exports = self;
 
 
 // exports.getProjects = function(req, res, next) {
