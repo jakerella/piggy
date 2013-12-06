@@ -1,31 +1,39 @@
 
 var e = require("./errors.js"),
     data = require("./data-helper.js"),
-    mongo = require("./mongo-helper.js");
+    mongo = require("./mongo-helper.js"),
 
-var COOKIE_NAME = "piggy_token",
-    appName = "Piggy Tracker";
+    COOKIE_NAME = "piggy_token";
+
+require("date-utils");
 
 // This is our "auth" check for pages behind the token
 exports.hasToken = function (req, res, next) {
-    if (req.cookies[COOKIE_NAME]) {
-        req.session.token = req.cookies[COOKIE_NAME];
-        next();
-    } else if (req.xhr) {
-        res.send(403, { error: "You will need to login before accessing this resource" });
-    } else {
-        res.redirect("/");
-    }
+    // TODO: FOR TESTING
+    next();
+    return;
+
+    // if (req.cookies[COOKIE_NAME]) {
+    //     req.session.token = req.cookies[COOKIE_NAME];
+    //     next();
+    // } else if (req.xhr) {
+    //     res.send(403, { error: "You will need to login before accessing this resource" });
+    // } else {
+    //     res.redirect("/");
+    // }
 };
 
 exports.index = function(req, res) {
-    // if (req.cookies[COOKIE_NAME]) {
-    //     res.redirect("/projects");
-    //     return;
-    // }
+    res.render("index", { title: "Home", page: "home" });
+};
 
-    //res.render("index", { title: appName + " - Login", page: "login" });
-    res.render("index", { title: appName, page: "home" });
+exports.showAddPage = function(req, res) {
+    res.render("add", {
+        title: "Add Transaction",
+        page: "add-trans",
+        today: (new Date()).toFormat("M/D/YYYY"),
+        categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
+    });
 };
 
 

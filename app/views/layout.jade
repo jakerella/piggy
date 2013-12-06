@@ -2,7 +2,7 @@
 html
   head
     meta(charset="utf-8")
-    title #{title}
+    title #{title} | Piggy Tracker
     
     block styles
         link(href="/style/normalize.css", rel="stylesheet", type="text/css")
@@ -10,15 +10,17 @@ html
 
   body(class="page_#{page}")
 
-    header #{title}
+    header
+        h1 Piggy Tracker
+        h2 #{title}
 
-    #wrapper
-        div#messages
+    section.content
+        aside.messages
         block content
 
     footer
         p
-            | The <a href="https://github.com/jakerella/piggy">Piggy</a> app is &copy; 2013 Jordan Kasper, under an <a href="https://github.com/jakerella/piggy/blob/master/LICENSE">MIT license</a>
+            | <a href="https://github.com/jakerella/piggy/blob/master/LICENSE">&copy; 2013 Jordan Kasper</a>
 
     block scripts
         script(src="/script/client.js")

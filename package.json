@@ -1,26 +1,24 @@
 {
-    "name": "piggy",
-    "description": "A simple account tracker (think 'piggy bank').",
-    "version": "0.1.0",
-    "engines": {
-        "node": "0.10.22",
-        "npm": "1.2.x"
-    },
-    "private": true,
-    "scripts": {
-        "start": "node app/app.js"
-    },
-    "devDependencies": {
-        "grunt": "0.4.x",
-        "grunt-contrib-clean": "*",
-        "grunt-contrib-watch": "*",
-        "grunt-contrib-jshint": "*",
-        "grunt-contrib-copy": "*",
-        "matchdep": "0.1.x"
-    },
-    "dependencies": {
-        "express": "3.x",
-        "jade": "0.28.x",
-        "mongodb": "1.2.x"
-    }
+  "name": "piggy",
+  "description": "A simple account tracker (think 'piggy bank').",
+  "version": "0.1.0",
+  "engines": {
+    "node": "0.10.22",
+    "npm": "1.2.x"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node app/app.js"
+  },
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "grunt-contrib-jshint": "*",
+    "matchdep": "0.1.x"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "jade": "0.28.x",
+    "mongodb": "1.2.x",
+    "date-utils": "1.2.x"
+  }
 }

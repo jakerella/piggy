@@ -1,0 +1,26 @@
+extend layout
+
+block pageScript
+    script.
+        pig.init();
+
+block content
+    section.add-transaction
+        form(action="/transaction/add", method="POST")
+            div.group
+                label(for="amount") Expense
+                input(name="amount", id="amount", type="number", placeholder="13.56", autofocus, required)
+            div.group
+                label(for="date") Date
+                input(name="date", id="date", type="date", value="#{today}", placeholder="mm/dd/yyyy")
+            div.group
+                label(for="message") Message
+                input(name="message", id="message", type="text", placeholder="optional")
+            div.group
+                label(for="category") Category
+                select(name="category", id="category", size="10")
+                    - each category, index in categories
+                        option(value="#{index}")
+                            | #{category}
+            div.actions
+                input(type="submit", value="Add")

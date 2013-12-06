@@ -41,7 +41,7 @@ console.log("Using Mongo URI: " + process.env.PIGGY_DB_URL);
 
 // GETs
 app.get("/", routes.index);
-// app.get("/projects", routes.hasToken, routes.listProjects);
+app.get("/transaction/add", routes.hasToken, routes.showAddPage);
 
 
 // POSTs
