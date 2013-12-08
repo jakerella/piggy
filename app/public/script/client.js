@@ -29,11 +29,12 @@
             },
 
             handleAddExpense: function(e) {
-                var data = {};
+                var form = $(e.currentTarget),
+                    data = {};
 
                 app.alerts.clearAll();
 
-                $(e.currentTarget).serializeArray().forEach(function(item) {
+                form.serializeArray().forEach(function(item) {
                     data[item.name] = item.value;
                 });
 
@@ -41,6 +42,8 @@
                     success: function(trans) {
                         console.log(trans);
                         app.alerts.success("Expense added successfully!");
+                        form.find("[name=description]").val("");
+                        form.find("[name=amount]").val("").focus();
                     },
                     error: function(err) {
                         app.alerts.error(err);
@@ -83,23 +86,49 @@
                     type: "post",
                     data: data,
                     dataType: "json",
-                    success: (cb.success || null),
+                    success: app.ajaxSuccess(cb.success, cb.error),
                     error: app.ajaxError(cb.error)
                 });
 
             }
         },
 
+        ajaxSuccess: function(success, error) {
+            success = (success || function() {});
+            error = (error || function() {});
+            return function(data) {
+                data = (data || {});
+                if (data.error) {
+                    (app.ajaxError(error))({
+                        responseText: JSON.stringify(data),
+                        status: data.status
+                    });
+                } else {
+                    success(data);
+                }
+            };
+        },
+
         ajaxError: function(handler) {
             handler = (handler || function() {});
             return function(xhr) {
-                if (xhr.status === 404) {
-                    console.error("Unable to find endpoint (404)");
+                var errJSON;
+                try {
+                    errJSON = JSON.parse(xhr.responseText);
+                } catch(err) {
+                    errJSON = {
+                        error: xhr.responseText,
+                        status: xhr.status
+                    };
+                }
+
+                if (errJSON.status === 404) {
+                    console.error("Unable to find endpoint (404)", errJSON.error);
                     handler("Sorry, but I couldn't complete that request");
-                } else if (xhr.status < 500) {
-                    handler(xhr.responseText);
+                } else if (errJSON.status && errJSON.status < 500) {
+                    handler(errJSON.error);
                 } else {
-                    console.error("Server error: ", xhr.responseText);
+                    console.error("Server error: ", errJSON.error);
                     handler("Sorry, but I couldn't complete that request");
                 }
             };

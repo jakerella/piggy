@@ -1,27 +1,29 @@
 
 var e = require("./errors.js"),
-    data = require("./data-helper.js"),
-    mongo = require("./mongo-helper.js"),
-
-    COOKIE_NAME = "piggy_token";
+    Account = require("./Account.js"),
+    currAccount;
 
 require("date-utils");
 
 var self = {
 
     hasToken: function (req, res, next) {
-        // TODO: FOR TESTING
-        next();
-        return;
+        if (req.session.account) {
+            currAccount = new Account(req.session.account.id);
+            next();
 
-        // if (req.cookies[COOKIE_NAME]) {
-        //     req.session.token = req.cookies[COOKIE_NAME];
-        //     next();
-        // } else if (req.xhr) {
-        //     res.send(403, { error: "You will need to login before accessing this resource" });
-        // } else {
-        //     res.redirect("/");
-        // }
+        } else if (req.xhr) {
+            next(new e.AuthError("Sorry, but you'll need to log in before continuing"));
+
+        } else {
+
+            // TODO: redirect to login
+            // res.redirect("/account/login");
+
+            req.session.account = { id: 1 };
+            currAccount = new Account(req.session.account.id);
+            next();
+        }
     },
 
     // ----------------- GET Requests --------------- //
@@ -31,9 +33,11 @@ var self = {
     },
 
     showAddPage: function(req, res) {
+
         res.render("add", {
             title: "Add Transaction",
             page: "add-trans",
+            account: req.session.account,
             today: (new Date()).toFormat("M/D/YYYY"),
             categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
         });
@@ -43,14 +47,22 @@ var self = {
     // ----------------- POST Requests --------------- //
 
     addTransaction: function(req, res, next) {
-        console.log();
-        
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end(JSON.stringify({
-            transaction: {},
-            user: {}
-        }));
-        return;
+        console.log(req.body);
+
+        if (!currAccount) {
+            next(new e.AuthError("Sorry, but you'll need to log in before adding a transaction"));
+            return;
+        }
+
+        currAccount.addTransaction(req.body, function transAdded(err, trans) {
+            if (err) {
+                next(err);
+                return;
+            }
+
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(trans));
+        });
     }
 
 
