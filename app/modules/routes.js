@@ -9,8 +9,10 @@ var self = {
 
     hasToken: function (req, res, next) {
         if (req.session.account) {
-            currAccount = new Account(req.session.account.id);
-            next();
+            currAccount = new Account(req.session.account, function(err, acct) {
+                if (err) { next(err); return; }
+                next();
+            });
 
         } else if (req.xhr) {
             next(new e.AuthError("Sorry, but you'll need to log in before continuing"));
@@ -20,9 +22,11 @@ var self = {
             // TODO: redirect to login
             // res.redirect("/account/login");
 
-            req.session.account = { id: 1 };
-            currAccount = new Account(req.session.account.id);
-            next();
+            currAccount = new Account("52a50993e4b0a4119d8dbc39", function(err, acct) {
+                if (err) { next(err); return; }
+                req.session.account = acct._id;
+                next();
+            });
         }
     },
 
@@ -32,12 +36,16 @@ var self = {
         res.render("index", { title: "Home", page: "home" });
     },
 
-    showAddPage: function(req, res) {
+    showAddPage: function(req, res, next) {
+        if (!currAccount) {
+            next(new e.AuthError("Sorry, but you'll need to log in before adding a transaction"));
+            return;
+        }
 
         res.render("add", {
             title: "Add Transaction",
             page: "add-trans",
-            account: req.session.account,
+            account: currAccount,
             today: (new Date()).toFormat("M/D/YYYY"),
             categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
         });

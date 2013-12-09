@@ -80,51 +80,6 @@ exports.getOrCreateCollection = function(db, collName, cb) {
 };
 
 
-// exports.getOrCreateStory = function(story, dbScope, cb) {
-//     if (dbScope.isFunction()) { cb = dbScope; dbScope = null; }
-//     cb = (cb && cb.isFunction()) ? cb : function() {};
-//     dbScope = (dbScope || {});
-
-//     var self = this;
-//     self.connect(dbScope, function(err, db) {
-//         if (err) { cb(err); return; }
-
-//         self.getOrCreateCollection(db, "story", function(err, coll) {
-//             if (err) { cb(err, null); return; }
-
-//             coll
-//             .find({ "project": Number(story.project_id), "story": Number(story.id) })
-//             .toArray(function(err, recs) {
-//                 if (err) { cb(err, null); return; }
-
-//                 if (recs.length) {
-//                     // return existing story document
-//                     cb(null, recs[0]);
-//                     return;
-
-//                 } else {
-//                     console.log("No existing story document for this ID ("+story.id+"), creating it...");
-
-//                     coll.insert(
-//                         {
-//                             "project": Number(story.project_id),
-//                             "story": Number(story.id),
-//                             "current_state": story.current_state
-//                         },
-//                         function(err, recs) {
-//                             if (err) { cb(err, null); return; }
-
-//                             cb(null, recs[0]);
-//                             return;
-//                         }
-//                     );
-//                 }
-//             });
-//         });
-//     });
-// };
-
-
 // -------------- Private Module Functions --------------- //
 
 // internal use only
