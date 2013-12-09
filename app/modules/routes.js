@@ -1,6 +1,7 @@
 
 var e = require("./errors.js"),
     Account = require("./Account.js"),
+    Categories = require("../../categories.json"),
     currAccount;
 
 require("date-utils");
@@ -47,7 +48,7 @@ var self = {
             page: "add-trans",
             account: currAccount,
             today: (new Date()).toFormat("M/D/YYYY"),
-            categories: ["Dining Out", "Drinks", "Activites", "Fun Items", "Clothes"]
+            categories: Categories
         });
     },
 

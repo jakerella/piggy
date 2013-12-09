@@ -12,7 +12,7 @@ block content
 
             div.group
                 label(for="amount") Expense
-                input(name="amount", id="amount", type="number", placeholder="13.56", autofocus, required)
+                input(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required)
             div.group
                 label(for="date") Date
                 input(name="date", id="date", type="date", value="#{today}", placeholder="m/d/y", required)

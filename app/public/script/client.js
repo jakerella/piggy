@@ -32,11 +32,21 @@
                 var form = $(e.currentTarget),
                     data = {};
 
+                e.preventDefault();
+
                 app.alerts.clearAll();
 
                 form.serializeArray().forEach(function(item) {
                     data[item.name] = item.value;
                 });
+
+                if (!Number(data.amount) || data.amount < 0) {
+                    app.alerts.error("Please enter an expense amount (greater than zero)");
+                    return false;
+                }
+
+                // now flip the amount to negative
+                data.amount = Number(data.amount) * -1;
 
                 app.trans.add(data, {
                     success: function(trans) {
@@ -50,7 +60,6 @@
                     }
                 });
 
-                e.preventDefault();
                 return false;
             }
 
