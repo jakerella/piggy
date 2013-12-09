@@ -77,7 +77,27 @@
             },
 
             handleLoginPattern: function(pattern) {
-                console.log("login pattern", pattern);
+                app.alerts.clearAll();
+
+                $.ajax({
+                    url: "/account/login",
+                    type: "post",
+                    data: {
+                        owner: $("[name=account]").val(),
+                        pattern: pattern.join("")
+                    },
+                    dataType: "json",
+                    success: app.ajaxSuccess(app.login.success, app.login.error),
+                    error: app.ajaxError(app.login.error)
+                });
+            },
+
+            success: function() {
+                app.alerts.success("w00t!");
+            },
+
+            error: function(err) {
+                app.alerts.error(err);
             }
         },
 

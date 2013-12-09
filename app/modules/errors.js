@@ -13,14 +13,14 @@ AppError.prototype.status = 0;
 var HttpError = function (msg, status, constr) {
     AppError.apply(this, [msg, status, constr]);
 };
-util.inherits(HttpError, Error);
+util.inherits(HttpError, AppError);
 HttpError.prototype.name = "HTTP Error";
 HttpError.prototype.status = 500;
 
 var BadRequestError = function (msg, status, constr) {
     HttpError.apply(this, [msg, status, constr]);
 };
-util.inherits(BadRequestError, HttpError);
+util.inherits(BadRequestError, AppError);
 BadRequestError.prototype.name = "Bad Request Error";
 BadRequestError.prototype.status = 400;
 

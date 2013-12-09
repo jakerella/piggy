@@ -17,9 +17,6 @@ block pageScript
 block content
     section.login
         form(action="/account/login", method="POST")
-            p 
-                | Please login...
-
             div.group
                 label(for="account") Account Name
                 input(name="account", id="account", type="text", placeholder="Owner Name", autofocus, required)

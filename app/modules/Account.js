@@ -3,17 +3,32 @@ var e = require("./errors.js"),
 mongo = require("./mongo-helper.js"),
 Categories = require("../../categories.json"),
 ObjectID = require("mongodb").ObjectID,
+crypto = require("crypto"),
+
+// Private vars
+SALT = "j34&Fj69*&4hL#W0",
 
 // Private Helper declarations
 createTransaction,
 updateAccount,
+getPatternHash,
 
 // Main class
-Account = function(id, cb) {
+Account = function(id, cb, instance) {
     var self = this,
         oid = id;
 
     cb = (cb && cb.isFunction()) ? cb : function() {};
+
+    if (instance) {
+        self._id = instance._id;
+        self.owner = instance.owner;
+        self.balance = instance.balance;
+
+        self.dbInstance = instance;
+
+        return self;
+    }
 
     if (id && id.$oid) {
         oid = id.$oid;
@@ -43,6 +58,43 @@ Account = function(id, cb) {
 
 // --------------- Account methods --------------- //
 
+Account.doLogin = function(data, cb) {
+    data = (data || {});
+    cb = (cb && cb.isFunction()) ? cb : function() {};
+
+    if (!data.owner || !data.owner.length) {
+        cb(new e.BadRequestError("Please enter the account name"));
+        return;
+    }
+    if (!data.pattern || !data.pattern.length) {
+        cb(new e.BadRequestError("Please enter the account pattern"));
+        return;
+    }
+
+    mongo.connect(Account.prototype, function(err, db) {
+        if (err) { cb(err); return; }
+
+        mongo.getOrCreateCollection(db, "account", function(err, coll) {
+            if (err) { cb(err, null); return; }
+            
+            coll.findOne({ "owner": data.owner }, function(err, acct) {
+                var acctObj;
+
+                if (err) { cb(err, null); return; }
+
+                if (acct && acct.pattern === getPatternHash(data.owner, data.pattern)) {
+                    acctObj = new Account(null, null, acct);
+
+                    cb(null, acctObj);
+                    
+                } else {
+                    cb(new e.AuthError("Sorry, but that account name and pattern do not match"));
+                }
+            });
+        });
+    });
+};
+
 Account.prototype.addTransaction = function(data, cb) {
     var self = this;
 
@@ -60,11 +112,11 @@ Account.prototype.addTransaction = function(data, cb) {
 
     // Data audits
     if (!data.amount) {
-        cb(e.BadRequestError("Please enter a non-zero amount for this transaction"));
+        cb(new e.BadRequestError("Please enter a non-zero amount for this transaction"));
         return;
     }
     if (!Categories[data.category]) {
-        cb(e.BadRequestError("Please select a valid category"));
+        cb(new e.BadRequestError("Please select a valid category"));
         return;
     }
     if (!data.date) {
@@ -100,6 +152,13 @@ module.exports = Account;
 
 
 // ---------------- Private helpers ---------------- //
+
+getPatternHash = function(owner, pattern) {
+    var sha256 = crypto.createHash("sha256");
+
+    sha256.update(SALT + owner + SALT + pattern);
+    return sha256.digest("hex");
+},
 
 createTransaction = function(data, cb) {
     cb = (cb && cb.isFunction()) ? cb : function() {};

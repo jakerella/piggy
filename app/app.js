@@ -47,6 +47,7 @@ app.get("/transaction/add", routes.hasToken, routes.showAddPage);
 
 // POSTs
 app.post("/", routes.index);
+app.post("/account/login", routes.doAccountLogin);
 app.post("/transaction/add", routes.hasToken, routes.addTransaction);
 
 

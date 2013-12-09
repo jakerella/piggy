@@ -20,14 +20,13 @@ var self = {
 
         } else {
 
-            // TODO: redirect to login
-            // res.redirect("/account/login");
+            res.redirect("/account/login");
 
-            currAccount = new Account("52a50993e4b0a4119d8dbc39", function(err, acct) {
-                if (err) { next(err); return; }
-                req.session.account = acct._id;
-                next();
-            });
+            // currAccount = new Account("52a50993e4b0a4119d8dbc39", function(err, acct) {
+            //     if (err) { next(err); return; }
+            //     req.session.account = acct._id;
+            //     next();
+            // });
         }
     },
 
@@ -59,9 +58,27 @@ var self = {
 
     // ----------------- POST Requests --------------- //
 
-    addTransaction: function(req, res, next) {
-        console.log(req.body);
+    doAccountLogin: function(req, res, next) {
+        Account.doLogin(req.body, function(err, account) {
+            if (err) {
+                next(err);
+                return;
+            }
 
+            req.session.account = account._id;
+            currAccount = account;
+
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({
+                _id: account._id,
+                owner: account.owner,
+                balance: account.balance
+            }));
+        });
+
+    },
+
+    addTransaction: function(req, res, next) {
         if (!currAccount) {
             next(new e.AuthError("Sorry, but you'll need to log in before adding a transaction"));
             return;
