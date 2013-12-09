@@ -22,10 +22,8 @@
         },
 
         add: {
-            init: function(options) {
-                var expForm = document.querySelector("[action=\\/transaction\\/add]");
-
-                expForm.addEventListener("submit", this.handleAddExpense);
+            init: function() {
+                $("form[action=\\/transaction\\/add]").on("submit", this.handleAddExpense);
             },
 
             handleAddExpense: function(e) {
@@ -63,6 +61,24 @@
                 return false;
             }
 
+        },
+
+        login: {
+            init: function() {
+                $("form[action=\\/account\\/login]").on("submit", function(e) {
+                    console.error("Login form submission (should not occur)");
+                    e.preventDefault();
+                    return false;
+                });
+
+                $(".pattern-lock").patternInput({
+                    onFinish: this.handleLoginPattern
+                });
+            },
+
+            handleLoginPattern: function(pattern) {
+                console.log("login pattern", pattern);
+            }
         },
 
         trans: {

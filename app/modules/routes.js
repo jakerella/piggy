@@ -37,6 +37,10 @@ var self = {
         res.render("index", { title: "Home", page: "home" });
     },
 
+    showLoginPage: function(req, res) {
+        res.render("login", { title: "Login", page: "login" });
+    },
+
     showAddPage: function(req, res, next) {
         if (!currAccount) {
             next(new e.AuthError("Sorry, but you'll need to log in before adding a transaction"));
