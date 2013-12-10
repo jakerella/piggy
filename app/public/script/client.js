@@ -64,6 +64,9 @@
         },
 
         login: {
+            $account: null,
+            $lock: null,
+
             init: function() {
                 $("form[action=\\/account\\/login]").on("submit", function(e) {
                     console.error("Login form submission (should not occur)");
@@ -71,7 +74,14 @@
                     return false;
                 });
 
-                $(".pattern-lock").patternInput({
+                app.login.$account = $("[name=account]");
+                app.login.$lock = $(".pattern-lock");
+
+                if (localStorage.account && !app.login.$account.val().length) {
+                    app.login.$account.val(localStorage.account).blur();
+                }
+
+                app.login.$lock.patternInput({
                     onFinish: this.handleLoginPattern
                 });
             },
@@ -79,11 +89,16 @@
             handleLoginPattern: function(pattern) {
                 app.alerts.clearAll();
 
+                app.login.$account.attr("disabled", "disabled");
+                app.login.$lock.hide();
+
+                app.alerts.info("Working...");
+
                 $.ajax({
                     url: "/account/login",
                     type: "post",
                     data: {
-                        owner: $("[name=account]").val(),
+                        owner: app.login.$account.val(),
                         pattern: pattern.join("")
                     },
                     dataType: "json",
@@ -93,11 +108,15 @@
             },
 
             success: function() {
-                app.alerts.success("w00t!");
+                localStorage.account = app.login.$account.val();
+                window.location.replace($("[name=location]").val());
             },
 
             error: function(err) {
+                app.alerts.clearAll();
                 app.alerts.error(err);
+                app.login.$lock.show();
+                app.login.$account.attr("disabled", "");
             }
         },
 

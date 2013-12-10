@@ -14,19 +14,10 @@ var self = {
                 if (err) { next(err); return; }
                 next();
             });
-
         } else if (req.xhr) {
             next(new e.AuthError("Sorry, but you'll need to log in before continuing"));
-
         } else {
-
-            res.redirect("/account/login");
-
-            // currAccount = new Account("52a50993e4b0a4119d8dbc39", function(err, acct) {
-            //     if (err) { next(err); return; }
-            //     req.session.account = acct._id;
-            //     next();
-            // });
+            res.redirect("/account/login?l=" + req.url);
         }
     },
 
@@ -37,7 +28,15 @@ var self = {
     },
 
     showLoginPage: function(req, res) {
-        res.render("login", { title: "Login", page: "login" });
+        var loc = "/account";
+        if (req.query.l) {
+            loc = req.query.l;
+        }
+        res.render("login", { title: "Login", page: "login", location: escape(loc) });
+    },
+
+    showAccountSummary: function(req, res) {
+        res.render("account", { title: "Account", page: "acct" });
     },
 
     showAddPage: function(req, res, next) {
