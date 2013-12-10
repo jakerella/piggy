@@ -5,5 +5,19 @@ block pageScript
         pig.init("acct");
 
 block content
-    p.intro
-        | This is your account
+    h3
+        | #{account.owner}'s account
+
+    p
+        | Balance: $#{account.balance}
+
+    div.latest-trans
+        p Last #{transactions.length} transactions
+        ul
+            - each trans in transactions
+                li
+                    span.amount $#{trans.amount} 
+                    span.date #{trans.dateDisplay} 
+                    span.description #{trans.description} 
+                    span.category #{categories[trans.category]}
+

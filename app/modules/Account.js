@@ -147,6 +147,32 @@ Account.prototype.addTransaction = function(data, cb) {
     });
 };
 
+Account.prototype.getTransactions = function(data, cb) {
+    data = (data || {});
+
+    mongo.connect(Account.prototype, function(err, db) {
+        if (err) { cb( e.getErrorObject(err) ); return; }
+
+        mongo.getOrCreateCollection(db, "transaction", function(err, coll) {
+            if (err) { cb( e.getErrorObject(err) ); return; }
+
+            coll
+            .find((data.query || {}), (data.options || null))
+            .toArray(function(err, transactions) {
+                if (err) { cb( e.getErrorObject(err) ); return; }
+
+                transactions.forEach(function(trans) {
+                    trans.dateDisplay = (new Date(trans.date)).toFormat("M/D/YYYY");
+                    trans.timeDisplay = (new Date(trans.date)).toFormat("H:MI P");
+                });
+
+                cb(null, transactions);
+                return;
+            });
+        });
+    });
+};
+
 
 module.exports = Account;
 
