@@ -12,7 +12,9 @@ block content
         | Balance: $#{account.balance}
 
     div.latest-trans
-        p Last #{transactions.length} transactions
+        p 
+            | Last #{transactions.length} transactions
+            | <a href="/transaction/add" class="button">Add</a>
         ul
             - each trans in transactions
                 li

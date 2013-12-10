@@ -8,7 +8,7 @@ block content
     section.add-transaction
         form(action="/transaction/add", method="POST")
             p 
-                | Adding expense in <em>#{account.owner}</em>'s account...
+                | Adding expense in <a href="/account"><em>#{account.owner}</em>'s account<a/>...
 
             div.group
                 label(for="amount") Expense

@@ -29,7 +29,7 @@ var self = {
 
     showLoginPage: function(req, res) {
         var loc = "/account";
-        if (req.query.l) {
+        if (req.query.l && req.query.l.length > 1) {
             loc = req.query.l;
         }
         res.render("login", { title: "Login", page: "login", location: escape(loc) });
