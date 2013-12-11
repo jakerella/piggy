@@ -5,9 +5,10 @@ var express = require("express"),
     http = require("http"),
     e = require("./modules/errors.js"),
     routes = require("./modules/routes.js"),
-    mongo = require("./modules/mongo-helper.js");
+    mongo = require("./modules/mongo-helper.js"),
+    logger = require("./modules/logger.js"),
 
-var app = express();
+    app = express();
 
 // Config and middleware
 app.configure(function () {
@@ -16,7 +17,6 @@ app.configure(function () {
     app.set("port", process.env.PORT || 5000);
     app.set("views", __dirname + "/views");
     app.set("view engine", "jade");
-    app.use(express.logger("dev"));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser("nYUrgb74hmiwtYgHd64K4q"));
@@ -34,7 +34,7 @@ var mongoInfo = mongo.parseConnectionURI(process.env.PIGGY_DB_URL);
 if (!mongoInfo) {
     throw new Error("Either no MongoDB connection URL was provided or it was invalid. Please place one in an environment variable (\"MONGO_DB_URL\") with the format: [protocol][username:password@]host[:port]/database");
 }
-console.log("Using Mongo URI: " + process.env.PIGGY_DB_URL);
+logger.info("Using Mongo URI: " + process.env.PIGGY_DB_URL);
 
 
 // ROUTING
@@ -62,5 +62,5 @@ app.get("*", function(req, res, next) {
 // Start up the server
 
 http.createServer(app).listen(app.get("port"), function () {
-    console.log("piggy server listening on port " + app.get("port"));
+    logger.info("piggy server listening on port " + app.get("port"));
 });

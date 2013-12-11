@@ -4,3 +4,6 @@ npm-debug.log
 
 # We don't want to check in packages
 node_modules/*
+
+# or logs
+logs/

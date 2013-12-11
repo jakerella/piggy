@@ -2,6 +2,10 @@
   "name": "piggy",
   "description": "A simple account tracker (think 'piggy bank').",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jakerella/piggy.git"
+  },
   "engines": {
     "node": "0.10.22",
     "npm": "1.2.x"
@@ -19,6 +23,7 @@
     "express": "3.x",
     "jade": "0.28.x",
     "mongodb": "1.2.x",
-    "date-utils": "1.2.x"
+    "date-utils": "1.2.x",
+    "winston": "0.7.x"
   }
 }
