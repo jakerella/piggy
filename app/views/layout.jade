@@ -1,29 +1,45 @@
 !!!5
 html
-  head
-    meta(charset="utf-8")
-    title #{title} | Piggy Tracker
-    
-    block styles
-        link(href="/style/normalize.css", rel="stylesheet", type="text/css")
-        link(href="/style/base.css", rel="stylesheet", type="text/css")
+    head
+        meta(charset="utf-8")
+        title #{title} | Piggy Tracker
 
-  body(class="page_#{page}")
+        meta(name="viewport", content="initial-scale=1.0, user-scalable=no")
+        meta(name="apple-mobile-web-app-capable", content="yes")
+        meta(name="apple-mobile-web-app-status-bar-style", content="black")
+        
+        block styles
+            link(href="/style/jquery.mobile-1.3.2.min.css", rel="stylesheet", type="text/css")
+            link(href="/style/site.css", rel="stylesheet", type="text/css")
 
-    header
-        h1 Piggy Tracker
-        h2 #{title}
+        mixin footer(page, linkPrefix)
+            - var theme = { account: (page==="account") ? "b" : "a", expense: (page==="expense") ? "b" : "a", deposit: (page==="deposit") ? "b" : "a", }
+            - linkPrefix = (linkPrefix || "")
+            - var ajax = (linkPrefix.length) ? "false" : "true";
+            div(data-theme="a", data-role="footer", data-position="fixed")
+                div(data-role="navbar", data-iconpos="top")
+                    ul
+                        li
+                            a(href="#{linkPrefix}#page_account", data-transition="slide", data-theme="#{theme.account}", data-icon="home", data-ajax="#{ajax}")
+                                | Account
+                        li
+                            a(href="#{linkPrefix}#page_expense", data-transition="slide", data-theme="#{theme.expense}", data-icon="edit", data-ajax="#{ajax}")
+                                | Expense
+                        li
+                            a(href="#{linkPrefix}#page_deposit", data-transition="slide", data-theme="#{theme.deposit}", data-icon="plus", data-ajax="#{ajax}")
+                                | Deposit
 
-    section.content
-        aside.messages
+    body
+
         block content
+            p
+                | Coming Soon...
 
-    footer
-        p
-            | <a href="https://github.com/jakerella/piggy/blob/master/LICENSE">&copy; 2013 Jordan Kasper</a>
+        block scripts
+            script(src="/script/jquery-1.10.2.min.js")
+            script(src="/script/jquery.mobile-1.3.2.min.js")
+            script(src="/script/client.js")
 
-    block scripts
-        script(src="/script/jquery-1.10.2.min.js")
-        script(src="/script/client.js")
-
-    block pageScript
+        block pageScript
+            script.
+                pig.init();

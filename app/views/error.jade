@@ -1,18 +1,27 @@
+           
 extend layout
 
 block content
-    h2.page-title
-        | Uh oh...
-
-    p.intro
-        | Sorry, but it looks like there was an error!
-
-    p.error
-        | #{error.message}
-
-    if printStack
-        h3.stackTitle Error Stack Trace
-        p.errorStack
-            - var stackLines = error.stack.replace(/\n/g, "<br />");
-            != stackLines
+    div(data-role="page", id="page_error")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 Uh Oh
+        div(data-role="content")
             
+            p.intro
+                | Sorry, but it looks like there was an error!
+
+            p.error
+                | #{error.message}
+
+            if printStack
+                h3.stackTitle Error Stack Trace
+                p.errorStack
+                    - var stackLines = error.stack.replace(/\n/g, "<br />");
+                    != stackLines
+
+        +footer("error", "/main", "false")
+
+
+block pageScript
+    script.
+        pig.init("error");

@@ -23,16 +23,22 @@ var self = {
 
     // ----------------- GET Requests --------------- //
 
-    index: function(req, res) {
-        res.render("index", { title: "Home", page: "home" });
-    },
-
     showLoginPage: function(req, res) {
-        var loc = "/account";
+        var loc = "/main";
         if (req.query.l && req.query.l.length > 1) {
             loc = req.query.l;
         }
         res.render("login", { title: "Login", page: "login", location: escape(loc) });
+    },
+
+    redirectToAccountPage: function(req, res) {
+        res.redirect("/main#page_account");
+    },
+    redirectToExpensePage: function(req, res) {
+        res.redirect("/main#page_expense");
+    },
+    redirectToDepositPage: function(req, res) {
+        res.redirect("/main#page_deposit");
     },
 
     showAccountSummary: function(req, res, next) {
@@ -47,7 +53,7 @@ var self = {
             function(err, transactions) {
                 if (err) { next(err); return; }
 
-                res.render("account", {
+                res.render("main", {
                     title: "Account",
                     page: "acct",
                     account: currAccount,
@@ -57,16 +63,6 @@ var self = {
                 });
             }
         );
-    },
-
-    showAddPage: function(req, res, next) {
-        res.render("add", {
-            title: "Add Transaction",
-            page: "add-trans",
-            account: currAccount,
-            today: (new Date()).toFormat("M/D/YYYY"),
-            categories: Categories
-        });
     },
 
 

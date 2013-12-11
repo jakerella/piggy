@@ -1,0 +1,74 @@
+extend layout
+
+block content
+    div(data-role="page", id="page_account")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 #{account.owner}'s account
+        div(data-role="content")
+            aside.messages
+
+            h4 Balance: $#{account.balance}
+
+            h4 Last #{transactions.length} Transactions:
+            div(data-role="collapsible-set", data-theme="b", data-content-theme="c")
+                - each trans in transactions
+                    div(data-role="collapsible")
+                        h3 $#{trans.amount} #{trans.dateDisplay}
+                        p.description
+                            | #{trans.description}
+                        p.category
+                            | #{categories[trans.category]}
+        +footer("account")
+        
+
+    div(data-role="page", id="page_expense")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 #{account.owner}'s account
+        div(data-role="content")
+            h3 Add Expense
+
+            aside.messages
+
+            form(action="/transaction/add", method="POST")
+                div(data-role="fieldcontain")
+                    label(for="amount") Amount
+                    input(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required, data-mini="true")
+                
+                div(data-role="fieldcontain")
+                    label(for="date") Date
+                    input(name="date", id="date", type="date", value="#{today}", placeholder="m/d/y", required, data-mini="true")
+
+                div(data-role="fieldcontain")
+                    label(for="description") Description
+                    input(name="description", id="description", type="text", placeholder="optional", data-mini="true")
+
+                div(data-role="fieldcontain")
+                    label(for="category") Category
+                    select(name="category", id="category", required, data-native-menu="false", data-theme="b", data-mini="true")
+                        - each category, index in categories
+                            option(value="#{index}")
+                                | #{category}
+
+                div.actions
+                    input(type="submit", value="Submit", data-theme="e", data-icon="check", data-iconpos="right")
+                    input(name="account", type="hidden", value="#{account.id}")
+
+        +footer("expense")
+
+
+    div(data-role="page", id="page_deposit")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 #{account.owner}'s account
+        div(data-role="content")
+            h3 Add Deposit
+
+            aside.messages
+
+            p Coming soon!
+            
+        +footer("deposit")
+
+
+block pageScript
+    script.
+        pig.init("main");

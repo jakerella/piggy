@@ -21,7 +21,7 @@
 
         },
 
-        add: {
+        main: {
             init: function() {
                 $("form[action=\\/transaction\\/add]").on("submit", this.handleAddExpense);
             },
@@ -40,6 +40,7 @@
 
                 if (!Number(data.amount) || data.amount < 0) {
                     app.alerts.error("Please enter an expense amount (greater than zero)");
+                    form.find(".ui-submit").removeClass("ui-btn-active");
                     return false;
                 }
 
@@ -52,9 +53,11 @@
                         app.alerts.success("Expense added successfully!");
                         form.find("[name=description]").val("");
                         form.find("[name=amount]").val("").focus();
+                        form.find(".ui-submit").removeClass("ui-btn-active");
                     },
                     error: function(err) {
                         app.alerts.error(err);
+                        form.find(".ui-submit").removeClass("ui-btn-active");
                     }
                 });
 

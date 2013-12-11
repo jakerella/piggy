@@ -1,25 +1,35 @@
 extend layout
 
+block content
+    div(data-role="page", id="page_login")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 Login
+        div(data-role="content")
+            
+            aside.messages
+            
+            form(action="/account/login", method="POST")
+                div(data-role="fieldcontain")
+                    label(for="account") Account Name
+                    input(name="account", id="account", type="text", placeholder="Owner Name", autofocus, required)
+                    input(name="location", type="hidden", value="#{location}")
+
+                div.pattern-lock
+
+        +footer("login", "/main", "false")
+
+
 block styles
-    link(href="/style/normalize.css", rel="stylesheet", type="text/css")
-    link(href="/style/base.css", rel="stylesheet", type="text/css")
+    link(href="/style/jquery.mobile-1.3.2.min.css", rel="stylesheet", type="text/css")
+    link(href="/style/site.css", rel="stylesheet", type="text/css")
     link(href="/style/pattern-input.css", rel="stylesheet", type="text/css")
 
 block scripts
     script(src="/script/jquery-1.10.2.min.js")
+    script(src="/script/jquery.mobile-1.3.2.min.js")
     script(src="/script/jquery-pattern-input.js")
     script(src="/script/client.js")
 
 block pageScript
     script.
         pig.init("login");
-
-block content
-    section.login
-        form(action="/account/login", method="POST")
-            div.group
-                label(for="account") Account Name
-                input(name="account", id="account", type="text", placeholder="Owner Name", autofocus, required)
-                input(name="location", type="hidden", value="#{location}")
-
-            div.pattern-lock
