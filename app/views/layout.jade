@@ -13,7 +13,7 @@ html
             link(href="/style/site.css", rel="stylesheet", type="text/css")
 
         mixin footer(page, linkPrefix)
-            - var theme = { account: (page==="account") ? "b" : "a", expense: (page==="expense") ? "b" : "a", deposit: (page==="deposit") ? "b" : "a", }
+            - var theme = { account: (page==="account") ? "b" : "a", expense: (page==="expense") ? "b" : "a", deposit: (page==="deposit") ? "b" : "a", report: (page==="report") ? "b" : "a" }
             - linkPrefix = (linkPrefix || "")
             - var ajax = (linkPrefix.length) ? "false" : "true";
             div(data-theme="a", data-role="footer", data-position="fixed")
@@ -28,6 +28,9 @@ html
                         li
                             a(href="#{linkPrefix}#page_deposit", data-transition="slide", data-theme="#{theme.deposit}", data-icon="plus", data-ajax="#{ajax}")
                                 | Deposit
+                        li
+                            a(href="#{linkPrefix}#page_report", data-transition="slide", data-theme="#{theme.report}", data-icon="bars", data-ajax="#{ajax}")
+                                | Report
 
     body
 

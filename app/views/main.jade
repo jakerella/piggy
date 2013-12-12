@@ -7,10 +7,13 @@ block content
         div(data-role="content")
             aside.messages
 
-            h4 Balance: $#{account.balance}
+            - var balanceClass = (account.balance > 0) ? "positive" : "negative"
+            h4.accountBalance
+                | Balance: 
+                span(class="#{balanceClass}") $#{account.balance}
 
             h4 Last #{transactions.length} Transactions:
-            div(data-role="collapsible-set", data-theme="b", data-content-theme="c")
+            div.recentTrans(data-role="collapsible-set", data-theme="b", data-content-theme="c")
                 - each trans in transactions
                     div(data-role="collapsible")
                         h3 $#{trans.amount} #{trans.dateDisplay}
@@ -30,11 +33,11 @@ block content
             aside.messages
 
             form(action="/transaction/add", method="POST")
-                div(data-role="fieldcontain")
+                div.inlineField(data-role="fieldcontain")
                     label(for="amount") Amount
                     input(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required, data-mini="true")
                 
-                div(data-role="fieldcontain")
+                div.inlineField(data-role="fieldcontain")
                     label(for="date") Date
                     input(name="date", id="date", type="date", value="#{today}", placeholder="m/d/y", required, data-mini="true")
 
@@ -67,6 +70,19 @@ block content
             p Coming soon!
             
         +footer("deposit")
+
+
+    div(data-role="page", id="page_report")
+        div(data-theme="a", data-role="header", data-position="fixed")
+            h3 #{account.owner}'s account
+        div(data-role="content")
+            h3 Report
+
+            aside.messages
+
+            p Coming soon!
+            
+        +footer("report")
 
 
 block pageScript
