@@ -12,7 +12,8 @@ block content
                 | Balance: 
                 span(class="amount #{balanceClass}") $#{account.balance.toFixed(2)}
 
-            h4 Last #{transactions.length} Transactions:
+            h4 
+                | Last <span class="recentTransCount">#{transactions.length}</span> Transactions:
             div.recentTrans(data-role="collapsible-set", data-theme="b", data-content-theme="c")
                 - each trans in transactions
                     div(data-role="collapsible")
@@ -103,5 +104,7 @@ block content
 
 
 block pageScript
+    script
+        pig.categories = "#{categories}".split(",");
     script.
         pig.init("main");

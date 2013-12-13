@@ -4,8 +4,7 @@
     window.console = (window.console || { log: function() {}, error: function() {}});
 
     var app = window.pig = {
-        cookieName: "piggy_token",
-
+        categories: {},
         $messageNode: null,
 
         init: function(page, options) {
@@ -23,6 +22,10 @@
 
         main: {
             init: function() {
+                app.main.$acctBalance = $("#page_account .amount");
+                app.main.$recentTrans = $("div.recentTrans");
+                app.main.$recentTransCount = $(".recentTransCount");
+
                 $("form[action=\\/transaction\\/add]").on("submit", this.handleAddTransaction);
             },
 
@@ -53,6 +56,25 @@
                 app.trans.add(data, {
                     success: function(trans) {
                         console.log(trans);
+                        
+                        var balance = Number(app.main.$acctBalance.text().substr(1)),
+                            transDiv = $("<div data-role='collapsible' class='ui-first-child' />");
+                        
+                        if (balance) {
+                            app.main.$acctBalance.text("$" + (balance + trans.amount).toFixed(2));
+                        }
+
+                        app.main.$recentTrans.find(".ui-first-child").removeClass("ui-first-child");
+
+                        transDiv.append(
+                            "<h3>$" + trans.amount.toFixed(2) + " " + trans.dateDisplay + "</h3>" +
+                            "<p class='description'>" + trans.description + "</p>" +
+                            "<p class='category'>" + app.categories[trans.category] + "</p>"
+                        );
+                        app.main.$recentTrans.prepend(transDiv);
+                        transDiv.collapsible();
+                        app.main.$recentTransCount.text(Number(app.main.$recentTransCount.text()) + 1);
+
                         app.alerts.success("Transaction added successfully!");
                         form.find("[name=description]").val("");
                         form.find("[name=amount]").val("").focus();

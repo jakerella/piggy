@@ -25,3 +25,15 @@
     display: inline-block;
     margin-left: 1em;
 }
+
+.messages p {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    margin: 0.2em 0;
+    padding: 0.4em 1em;
+}
+
+.messages .success { color: #090; }
+.messages .error { color: #900; }
+.messages .info { color: #009; }

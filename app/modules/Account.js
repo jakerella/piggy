@@ -142,6 +142,9 @@ Account.prototype.addTransaction = function(data, cb) {
                 return;
             }
 
+            trans.dateDisplay = (new Date(trans.date)).toFormat("M/D/YYYY");
+            trans.timeDisplay = (new Date(trans.date)).toFormat("H:MI P");
+
             cb(null, trans, acct);
         });
     });
