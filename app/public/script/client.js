@@ -243,7 +243,7 @@
             },
 
             clearAll: function() {
-                app.$messageNode.get(0).innerHTML = "";
+                app.$messageNode.empty();
             }
         }
 
