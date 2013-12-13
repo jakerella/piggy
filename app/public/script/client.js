@@ -23,10 +23,10 @@
 
         main: {
             init: function() {
-                $("form[action=\\/transaction\\/add]").on("submit", this.handleAddExpense);
+                $("form[action=\\/transaction\\/add]").on("submit", this.handleAddTransaction);
             },
 
-            handleAddExpense: function(e) {
+            handleAddTransaction: function(e) {
                 var form = $(e.currentTarget),
                     data = {};
 
@@ -38,19 +38,22 @@
                     data[item.name] = item.value;
                 });
 
-                if (!Number(data.amount) || data.amount < 0) {
-                    app.alerts.error("Please enter an expense amount (greater than zero)");
+                if (!Number(data.amount)) {
+                    app.alerts.error("Please enter an amount (greater than zero)");
                     form.find(".ui-submit").removeClass("ui-btn-active");
                     return false;
                 }
+                data.amount = Number(data.amount);
 
-                // now flip the amount to negative
-                data.amount = Number(data.amount) * -1;
+                // if an expense, flip the amount to negative
+                if (form.find("[name=amount]").hasClass("expense") && data.amount > 0) {
+                    data.amount *= -1;
+                }
 
                 app.trans.add(data, {
                     success: function(trans) {
                         console.log(trans);
-                        app.alerts.success("Expense added successfully!");
+                        app.alerts.success("Transaction added successfully!");
                         form.find("[name=description]").val("");
                         form.find("[name=amount]").val("").focus();
                         form.find(".ui-submit").removeClass("ui-btn-active");
@@ -156,7 +159,6 @@
                     success: app.ajaxSuccess(cb.success, cb.error),
                     error: app.ajaxError(cb.error)
                 });
-
             }
         },
 

@@ -10,7 +10,7 @@ block content
             - var balanceClass = (account.balance > 0) ? "positive" : "negative"
             h4.accountBalance
                 | Balance: 
-                span(class="#{balanceClass}") $#{account.balance}
+                span(class="amount #{balanceClass}") $#{account.balance.toFixed(2)}
 
             h4 Last #{transactions.length} Transactions:
             div.recentTrans(data-role="collapsible-set", data-theme="b", data-content-theme="c")
@@ -35,7 +35,7 @@ block content
             form(action="/transaction/add", method="POST")
                 div.inlineField(data-role="fieldcontain")
                     label(for="amount") Amount
-                    input(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required, data-mini="true")
+                    input.expense(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required, data-mini="true")
                 
                 div.inlineField(data-role="fieldcontain")
                     label(for="date") Date
@@ -49,8 +49,9 @@ block content
                     label(for="category") Category
                     select(name="category", id="category", required, data-native-menu="false", data-theme="b", data-mini="true")
                         - each category, index in categories
-                            option(value="#{index}")
-                                | #{category}
+                            - if (index > 0)
+                                option(value="#{index}")
+                                    | #{category}
 
                 div.actions
                     input(type="submit", value="Submit", data-theme="e", data-icon="check", data-iconpos="right")
@@ -67,7 +68,23 @@ block content
 
             aside.messages
 
-            p Coming soon!
+            form(action="/transaction/add", method="POST")
+                div.inlineField(data-role="fieldcontain")
+                    label(for="amount") Amount
+                    input.deposit(name="amount", id="amount", type="number", min="0.01", placeholder="13.56", autofocus, required, data-mini="true")
+                
+                div.inlineField(data-role="fieldcontain")
+                    label(for="date") Date
+                    input(name="date", id="date", type="date", value="#{today}", placeholder="m/d/y", required, data-mini="true")
+
+                div(data-role="fieldcontain")
+                    label(for="description") Description
+                    input(name="description", id="description", type="text", placeholder="optional", data-mini="true")
+
+                div.actions
+                    input(type="submit", value="Submit", data-theme="e", data-icon="check", data-iconpos="right")
+                    input(name="account", type="hidden", value="#{account.id}")
+                    input(name="category", type="hidden", value="0")
             
         +footer("deposit")
 
