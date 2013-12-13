@@ -74,6 +74,8 @@
             $lock: null,
 
             init: function() {
+                var loc;
+
                 $("form[action=\\/account\\/login]").on("submit", function(e) {
                     console.error("Login form submission (should not occur)");
                     e.preventDefault();
@@ -82,6 +84,11 @@
 
                 app.login.$account = $("[name=account]");
                 app.login.$lock = $(".pattern-lock");
+
+                if (window.location.hash) {
+                    loc = $("[name=location]");
+                    loc.val(loc.val() + window.location.hash);
+                }
 
                 if (localStorage.account && !app.login.$account.val().length) {
                     app.login.$account.val(localStorage.account).blur();
