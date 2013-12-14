@@ -153,6 +153,9 @@ Account.prototype.addTransaction = function(data, cb) {
 Account.prototype.getTransactions = function(data, cb) {
     data = (data || {});
 
+    data.query = (data.query || {});
+    data.query.account = this._id;
+
     mongo.connect(Account.prototype, function(err, db) {
         if (err) { cb( e.getErrorObject(err) ); return; }
 
@@ -160,7 +163,7 @@ Account.prototype.getTransactions = function(data, cb) {
             if (err) { cb( e.getErrorObject(err) ); return; }
 
             coll
-            .find((data.query || {}), (data.options || null))
+            .find(data.query, (data.options || null))
             .toArray(function(err, transactions) {
                 if (err) { cb( e.getErrorObject(err) ); return; }
 
