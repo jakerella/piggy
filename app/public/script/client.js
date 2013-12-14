@@ -151,7 +151,7 @@
                 app.alerts.clearAll();
                 app.alerts.error(err);
                 app.login.$lock.show();
-                app.login.$account.attr("disabled", "");
+                app.login.$account.removeAttr("disabled");
             }
         },
 
