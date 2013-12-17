@@ -106,7 +106,12 @@ Account.prototype.addTransaction = function(data, cb) {
 
     // Data type checking
     data.amount = Number(data.amount);
+    if (/^20[0-9]{2}\-[0-9]{2}\-[0-9]{2}$/.test(data.date)) {
+        data.date += "T12:00:00";
+    }
+    console.log("using date string: " + data.date);
     data.date = new Date(data.date);
+    console.log("converted date to: " + data.date);
     data.description = (data.description || "");
     data.category = Number(data.category);
 
