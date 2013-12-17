@@ -26,11 +26,19 @@
                 app.main.$recentTrans = $("div.recentTrans");
                 app.main.$recentTransCount = $(".recentTransCount");
 
-                $("form[action=\\/transaction\\/add]").on("submit", this.handleAddTransaction);
+                $("form[action=\\/transaction\\/add]")
+                    .on("submit", this.handleAddTransaction)
+                    .find("[required]")
+                        .on("invalid", function() {
+                            $(this)
+                                .closest("form")
+                                    .find(".ui-submit")
+                                        .removeClass("ui-btn-active");
+                        });
             },
 
             handleAddTransaction: function(e) {
-                var form = $(e.currentTarget),
+                var form = $(this),
                     data = {};
 
                 e.preventDefault();
