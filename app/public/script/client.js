@@ -127,6 +127,11 @@
                 app.login.$lock.patternInput({
                     onFinish: this.handleLoginPattern
                 });
+
+                $("body").on("touchmove", function(e) {
+                    // makes the pattern lock UI work on touch devices
+                    e.preventDefault();
+                });
             },
 
             handleLoginPattern: function(pattern) {
