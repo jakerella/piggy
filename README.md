@@ -6,43 +6,6 @@ A simple account tracker (think 'piggy bank').
 
 ## Server Installation
 
-### Database (MongoDB)
-
-You will need a MongoDB instance running somewhere (see the `PIGGY_DB_URL` env variable below). You can get a small amount of free space on [MongoLab](https://mongolab.com). Combining that with a single free Heroku web dyno you can easily run this app live without any set up costs. An example of the database connection URI:
-
-```
-mongodb://someuser:theirpass@abcd1234.mongolab.com/my-pt-stats
-```
-
-The database you create will need two collections: `accounts` and `transactions`. These will be created if they do not exist already.
-_NOTE: If your database already has these collections you could run into problems!_
-
-### Heroku Install
-
-Assuming you have a verified [Heroku account](http://www.heroku.com/) and the [Heroku toolbelt](https://toolbelt.herokuapp.com/) installed:
-
-```sh
-git clone git@github.com:jakerella/piggy.git
-cd piggy
-heroku apps:create [optional app name]
-heroku config:set NODE_ENV=[env name, e.g. "development" or "production" (defaults to "production")]
-heroku config:set PIGGY_DB_URL=[protocol][username:password@]{host name}[:port]{/database}
-heroku labs:enable user-env-compile -a [app name]
-git push heroku [local branch:]master
-```
-
-All of your `console.log()` statements will appear in the Heroku logs which you can view by running `heroku logs`. (Unless you have a [separate logger](https://devcenter.heroku.com/articles/logging) set up for your app, which you may want to do!) You may also want to review this guide to [Node.js on Heroku](https://devcenter.heroku.com/articles/nodejs).
-
-#### Using a local Heroku MongoDB instance
-
-You can use MongoDB from any server (see the options for setting up your mongo credentials above), but if you want to use Heroku's local instance of MongoDB you'll need to use their addon and specify `localhost` as the host for the DB server.
-
-```sh
-heroku addons:add mongolab
-```
-
-### Server Install
-
 You can run the Piggy app from just about any server. Here are the steps for doing so:
 
 1. [Install git](http://git-scm.com)
@@ -56,9 +19,24 @@ You can run the Piggy app from just about any server. Here are the steps for doi
 6. Set these three environment variables:
     * NODE_ENV = [env name, e.g. "development" or "production" (defaults to "production")]
     * PIGGY_DB_URL = [protocol][username:password@]{host name}[:port]{/database}
-7. Start the app with `npm start` (or `node app/app.js`)
+7. Copy `categories.sample.json` and rename it to `categories.json`
+    * Of course, you'll then want to edit it (__but keep the first entry as 'Deposit'!__)
+8. Start the app with `npm start` (or `node app/app.js`)
 
-_Note that the app will listen on port `5000` by default! You can view the application (locally) at http://localhost:5000_
+_Note that the app will listen on port `5000` by default! You can view the application (locally) at http://localhost:5000 or set the `PORT` environment variable._
+
+There will be a log file created in the /logs directory in the root of the project.
+
+### Database (MongoDB)
+
+You will need a MongoDB instance running somewhere (see the `PIGGY_DB_URL` env variable below). You can get a small amount of free space on [MongoLab](https://mongolab.com). Combining that with a single free Heroku web dyno you can easily run this app live without any set up costs. An example of the database connection URI:
+
+```
+mongodb://someuser:theirpass@abcd1234.mongolab.com/my-pt-stats
+```
+
+The database you create will need two collections: `accounts` and `transactions`. These will be created if they do not exist already.
+_NOTE: If your database already has these collections you could run into problems!_
 
 
 ## Authorization, Authentication, and Logging In

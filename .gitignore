@@ -5,5 +5,8 @@ npm-debug.log
 # We don't want to check in packages
 node_modules/*
 
+# This file should be created/edited by the developer
+categories.json
+
 # or logs
 logs/
