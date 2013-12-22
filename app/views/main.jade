@@ -1,16 +1,18 @@
 extend layout
 
 block content
+
+    - var balanceClass = (account.balance > 0) ? "positive" : "negative"
+
     div(data-role="page", id="page_account")
         div(data-theme="a", data-role="header", data-position="fixed")
             h3 #{account.owner}'s account
         div(data-role="content")
             aside.messages
 
-            - var balanceClass = (account.balance > 0) ? "positive" : "negative"
             h4.accountBalance
                 | Balance: 
-                span(class="amount #{balanceClass}") $#{account.balance.toFixed(2)}
+                span(class="amount #{balanceClass} balance") $#{account.balance.toFixed(2)}
 
             h4 
                 | Last <span class="recentTransCount">#{transactions.length}</span> Transactions:
@@ -27,7 +29,9 @@ block content
 
     div(data-role="page", id="page_expense")
         div(data-theme="a", data-role="header", data-position="fixed")
-            h3 #{account.owner}'s account
+            h3 
+                | #{account.owner}'s account
+                span(class="amount #{balanceClass} balance") $#{account.balance.toFixed(2)}
         div(data-role="content")
             h3 Add Expense
 
@@ -36,7 +40,7 @@ block content
             form(action="/transaction/add", method="POST")
                 div.inlineField(data-role="fieldcontain")
                     label(for="amount") Amount
-                    input.expense(name="amount", id="amount", type="number", min="0", placeholder="13.56", autofocus, required, data-mini="true")
+                    input.expense(name="amount", id="amount", type="text", placeholder="13.56", autofocus, required, data-mini="true")
                 
                 div.inlineField(data-role="fieldcontain")
                     label(for="date") Date
@@ -63,7 +67,9 @@ block content
 
     div(data-role="page", id="page_deposit")
         div(data-theme="a", data-role="header", data-position="fixed")
-            h3 #{account.owner}'s account
+            h3 
+                | #{account.owner}'s account
+                span(class="amount #{balanceClass} balance") $#{account.balance.toFixed(2)}
         div(data-role="content")
             h3 Add Deposit
 
@@ -72,7 +78,7 @@ block content
             form(action="/transaction/add", method="POST")
                 div.inlineField(data-role="fieldcontain")
                     label(for="amount") Amount
-                    input.deposit(name="amount", id="amount", type="number", min="0", placeholder="13.56", autofocus, required, data-mini="true")
+                    input.deposit(name="amount", id="amount", type="text", placeholder="13.56", autofocus, required, data-mini="true")
                 
                 div.inlineField(data-role="fieldcontain")
                     label(for="date") Date
@@ -92,7 +98,9 @@ block content
 
     div(data-role="page", id="page_report")
         div(data-theme="a", data-role="header", data-position="fixed")
-            h3 #{account.owner}'s account
+            h3 
+                | #{account.owner}'s account
+                span(class="amount #{balanceClass} balance") $#{account.balance.toFixed(2)}
         div(data-role="content")
             h3 Report
 

@@ -1,4 +1,14 @@
 
+.ui-header .ui-title {
+    position: relative;
+    margin: 0.6em 5% 0.8em;
+}
+.ui-header .ui-title .balance {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 .ui-content h3 { text-align: center; margin-top: 0; }
 .positive { color: #090; }
 .negative { color: #900; }

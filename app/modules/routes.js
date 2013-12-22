@@ -86,11 +86,14 @@ var self = {
     },
 
     addTransaction: function(req, res, next) {
-        currAccount.addTransaction(req.body, function transAdded(err, trans) {
+        currAccount.addTransaction(req.body, function transAdded(err, trans, acct) {
             if (err) { next(err); return; }
 
             res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify(trans));
+            res.end(JSON.stringify({
+                transaction: trans,
+                account: acct
+            }));
         });
     }
 

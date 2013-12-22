@@ -22,7 +22,7 @@
 
         main: {
             init: function() {
-                app.main.$acctBalance = $("#page_account .amount");
+                app.main.$acctBalance = $(".balance");
                 app.main.$recentTrans = $("div.recentTrans");
                 app.main.$recentTransCount = $(".recentTransCount");
 
@@ -62,32 +62,7 @@
                 }
 
                 app.trans.add(data, {
-                    success: function(trans) {
-                        console.log(trans);
-                        
-                        var balance = Number(app.main.$acctBalance.text().substr(1)),
-                            transDiv = $("<div data-role='collapsible' class='ui-first-child' />");
-                        
-                        if (balance) {
-                            app.main.$acctBalance.text("$" + (balance + trans.amount).toFixed(2));
-                        }
-
-                        app.main.$recentTrans.find(".ui-first-child").removeClass("ui-first-child");
-
-                        transDiv.append(
-                            "<h3>$" + trans.amount.toFixed(2) + " " + trans.dateDisplay + "</h3>" +
-                            "<p class='description'>" + trans.description + "</p>" +
-                            "<p class='category'>" + app.categories[trans.category] + "</p>"
-                        );
-                        app.main.$recentTrans.prepend(transDiv);
-                        transDiv.collapsible();
-                        app.main.$recentTransCount.text(Number(app.main.$recentTransCount.text()) + 1);
-
-                        app.alerts.success("Transaction added successfully!");
-                        form.find("[name=description]").val("");
-                        form.find("[name=amount]").val("").focus();
-                        form.find(".ui-submit").removeClass("ui-btn-active");
-                    },
+                    success: app.main.handleTransactionSuccess,
                     error: function(err) {
                         app.alerts.error(err);
                         form.find(".ui-submit").removeClass("ui-btn-active");
@@ -95,6 +70,46 @@
                 });
 
                 return false;
+            },
+
+            handleTransactionSuccess: function(data) {
+                var trans = data.transaction,
+                    acct = data.account;
+                
+                if (!trans || ! acct) {
+                    console.warn("Bad data returned from transaction/add: ", data);
+                    app.alerts.error("There may have been a problem adding this transaction. Please check your account.");
+                    return;
+                }
+
+                console.log("Transactiona added: ", data);
+
+                var transDiv = $("<div data-role='collapsible' class='ui-first-child' />");
+                
+                app.main.$acctBalance.text("$" + acct.balance.toFixed(2));
+                if (acct.balance > 0) {
+                    app.main.$acctBalance.addClass("positive");
+                    app.main.$acctBalance.removeClass("negative");
+                } else {
+                    app.main.$acctBalance.addClass("negative");
+                    app.main.$acctBalance.removeClass("positive");
+                }
+
+                app.main.$recentTrans.find(".ui-first-child").removeClass("ui-first-child");
+
+                transDiv.append(
+                    "<h3>$" + trans.amount.toFixed(2) + " " + trans.dateDisplay + "</h3>" +
+                    "<p class='description'>" + trans.description + "</p>" +
+                    "<p class='category'>" + app.categories[trans.category] + "</p>"
+                );
+                app.main.$recentTrans.prepend(transDiv);
+                transDiv.collapsible();
+                app.main.$recentTransCount.text(Number(app.main.$recentTransCount.text()) + 1);
+
+                app.alerts.success("Transaction added successfully!");
+                form.find("[name=description]").val("");
+                form.find("[name=amount]").val("").focus();
+                form.find(".ui-submit").removeClass("ui-btn-active");
             }
 
         },
