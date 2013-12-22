@@ -130,6 +130,7 @@ Account.prototype.addTransaction = function(data, cb) {
     }
 
     data.date = data.date.getTime();
+    data.createTime = (new Date()).getTime();
 
     // Do the DB updates
     createTransaction(data, function(err, trans) {
@@ -149,6 +150,7 @@ Account.prototype.addTransaction = function(data, cb) {
 
             trans.dateDisplay = (new Date(trans.date)).toFormat("M/D/YYYY");
             trans.timeDisplay = (new Date(trans.date)).toFormat("H:MI P");
+            trans.createTimeDisplay = (new Date(trans.createTime)).toFormat("M/D/YYYY");
 
             cb(null, trans, acct);
         });
@@ -175,6 +177,7 @@ Account.prototype.getTransactions = function(data, cb) {
                 transactions.forEach(function(trans) {
                     trans.dateDisplay = (new Date(trans.date)).toFormat("M/D/YYYY");
                     trans.timeDisplay = (new Date(trans.date)).toFormat("H:MI P");
+                    trans.createTimeDisplay = (new Date(trans.createTime || trans.date)).toFormat("M/D/YYYY");
                 });
 
                 cb(null, transactions);
