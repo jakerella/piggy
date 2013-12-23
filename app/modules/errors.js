@@ -73,6 +73,8 @@ module.exports = {
         } else if (eObj.status > 499) {
             console.error("ERROR: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
             console.error("STACK:", eObj.stack);
+        } else if (eObj.status > 400) {
+            console.error("40X: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
         }
 
         if (req.xhr) {
