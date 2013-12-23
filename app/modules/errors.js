@@ -1,6 +1,8 @@
 
 var util = require("util");
 
+require("date-utils");
+
 var AppError = function (msg, status, constr) {
     Error.captureStackTrace(this, constr || this);
     if (msg) { this.message = msg; }
@@ -62,9 +64,16 @@ module.exports = {
     },
 
     handleAppError: function(err, req, res, next) {
-        var eObj = module.exports.getErrorObject(err);
+        var eObj = module.exports.getErrorObject(err),
+            ip = req.connection.remoteAddress,
+            timestamp = (new Date()).toFormat("YYYY-D-M H:MI P");
 
-        console.error(eObj.stack);
+        if (eObj.status === 404) {
+            console.error("NOT FOUND: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
+        } else if (eObj.status > 499) {
+            console.error("ERROR: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
+            console.error("STACK:", eObj.stack);
+        }
 
         if (req.xhr) {
             res.send((eObj.status || 500), { error: eObj.message, status: eObj.status });
