@@ -66,7 +66,7 @@ var self = {
     },
 
 
-    // ----------------- POST Requests --------------- //
+    // ----------------- POST/DELETE Requests --------------- //
 
     doAccountLogin: function(req, res, next) {
         Account.doLogin(req.body, function(err, account) {
@@ -93,6 +93,22 @@ var self = {
             res.end(JSON.stringify({
                 transaction: trans,
                 account: acct
+            }));
+        });
+    },
+
+    deleteTransaction: function(req, res, next) {
+        // I have no idea why, but for some reason, even though the router matched
+        // our path, req.params is empty. Instead, we'll use the path...
+        var id = req.path.split(/\//)[2];
+
+        currAccount.deleteTransaction(id, function transDeleted(err, trans, acct) {
+            if (err) { next(err); return; }
+
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({
+                account: acct,
+                transactionId: trans._id
             }));
         });
     }

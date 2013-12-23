@@ -1,17 +1,18 @@
 
 var e = require("./errors.js"),
-mongo = require("./mongo-helper.js"),
-Categories = require("../../categories.json"),
-ObjectID = require("mongodb").ObjectID,
-crypto = require("crypto"),
+    mongo = require("./mongo-helper.js"),
+    Categories = require("../../categories.json"),
+    ObjectID = require("mongodb").ObjectID,
+    crypto = require("crypto"),
 
-// Private vars
-SALT = "j34&Fj69*&4hL#W0",
+    // Private vars
+    SALT = "j34&Fj69*&4hL#W0",
 
-// Private Helper declarations
-createTransaction,
-updateAccount,
-getPatternHash,
+    // Private Helper declarations
+    createTransaction,
+    deleteTransaction,
+    updateAccount,
+    getPatternHash,
 
 // Main class
 Account = function(id, cb, instance) {
@@ -109,9 +110,7 @@ Account.prototype.addTransaction = function(data, cb) {
     if (/^20[0-9]{2}\-[0-9]{2}\-[0-9]{2}$/.test(data.date)) {
         data.date += "T12:00:00";
     }
-    console.log("using date string: " + data.date);
     data.date = new Date(data.date);
-    console.log("converted date to: " + data.date);
     data.description = (data.description || "");
     data.category = Number(data.category);
 
@@ -157,6 +156,67 @@ Account.prototype.addTransaction = function(data, cb) {
     });
 };
 
+Account.prototype.deleteTransaction = function(oid, cb) {
+    var amount = 0,
+        self = this;
+
+    console.log("Deleting transaction ID: " + oid);
+
+    self.findTransaction(oid, function(err, transaction) {
+        if (err) { cb( e.getErrorObject(err) ); return; }
+
+        amount = transaction.amount;
+
+        deleteTransaction(oid, self._id, function(err) {
+            if (err) { cb( e.getErrorObject(err) ); return; }
+
+            console.log("Transaction deleted: " + oid);
+
+            self.dbInstance.balance = self.balance = (self.balance + (amount * -1));
+
+            updateAccount(self.dbInstance, function(err, acct) {
+                if (err) {
+                    console.error("Transaction deleted, but account balance change error: ", err);
+                    cb(err);
+                    return;
+                }
+
+                cb(null, transaction, acct);
+            });
+
+        });
+    });
+};
+
+Account.prototype.findTransaction = function(oid, cb) {
+    var self = this;
+
+    mongo.connect(Account.prototype, function(err, db) {
+        if (err) { cb( e.getErrorObject(err) ); return; }
+
+        mongo.getOrCreateCollection(db, "transaction", function(err, coll) {
+            if (err) { cb( e.getErrorObject(err) ); return; }
+
+            coll
+                .findOne({ _id: new ObjectID(oid), account: self._id }, function(err, transaction) {
+                    if (err) { cb( e.getErrorObject(err) ); return; }
+
+                    if (!transaction) {
+                        cb( new e.BadRequestError("Please select a valid transaction to delete") );
+                        return;
+                    }
+
+                    transaction.dateDisplay = (new Date(transaction.date)).toFormat("M/D/YYYY");
+                    transaction.timeDisplay = (new Date(transaction.date)).toFormat("H:MI P");
+                    transaction.createTimeDisplay = (new Date(transaction.createTime || transaction.date)).toFormat("M/D/YYYY");
+
+                    cb(null, transaction);
+                    return;
+                });
+        });
+    });
+};
+
 Account.prototype.getTransactions = function(data, cb) {
     data = (data || {});
 
@@ -198,7 +258,7 @@ getPatternHash = function(owner, pattern) {
 
     sha256.update(SALT + owner + SALT + pattern);
     return sha256.digest("hex");
-},
+};
 
 createTransaction = function(data, cb) {
     cb = (cb && cb.isFunction()) ? cb : function() {};
@@ -221,6 +281,27 @@ createTransaction = function(data, cb) {
     });
 };
 
+deleteTransaction = function(oid, accountId, cb) {
+    cb = (cb && cb.isFunction()) ? cb : function() {};
+
+    mongo.connect(Account.prototype, function(err, db) {
+        if (err) { cb(err); return; }
+
+        mongo.getOrCreateCollection(db, "transaction", function(err, coll) {
+            if (err) { cb(err, null); return; }
+
+            coll.remove(
+                { _id: new ObjectID(oid), account: accountId },
+                function(err) {
+                    if (err) { cb(err, null); return; }
+
+                    cb(null);
+                }
+            );
+        });
+    });
+};
+
 updateAccount = function(data, cb) {
     cb = (cb && cb.isFunction()) ? cb : function() {};
 
@@ -237,7 +318,7 @@ updateAccount = function(data, cb) {
                 function(err, count) {
                     if (err) { cb(err, null); return; }
 
-                    cb(null, data);
+                    cb(null, data, count);
                 }
             );
         });

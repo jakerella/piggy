@@ -53,6 +53,8 @@ app.post("/", routes.hasToken, routes.showAccountSummary);
 app.post("/account/login", routes.doAccountLogin);
 app.post("/transaction/add", routes.hasToken, routes.addTransaction);
 
+// DELETEs
+app.delete("/transaction/:trans([a-z0-9]+)", routes.hasToken, routes.deleteTransaction);
 
 // 404 page
 app.get("*", function(req, res, next) {
