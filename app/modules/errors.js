@@ -65,16 +65,15 @@ module.exports = {
 
     handleAppError: function(err, req, res, next) {
         var eObj = module.exports.getErrorObject(err),
-            ip = req.connection.remoteAddress,
-            timestamp = (new Date()).toFormat("YYYY-D-M H:MI P");
+            ip = req.connection.remoteAddress;
 
         if (eObj.status === 404) {
-            console.error("NOT FOUND: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
+            console.error("NOT FOUND: " + eObj.message, " (IP: " + ip + ")");
         } else if (eObj.status > 499) {
-            console.error("ERROR: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
+            console.error("ERROR: " + eObj.message, " (IP: " + ip + ")");
             console.error("STACK:", eObj.stack);
         } else if (eObj.status > 400) {
-            console.error("40X: " + eObj.message, " (IP: " + ip + "; time: " + timestamp + ")");
+            console.error("40X: " + eObj.message, " (IP: " + ip + ")");
         }
 
         if (req.xhr) {
