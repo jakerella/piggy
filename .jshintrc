@@ -1,6 +1,7 @@
 {
     "globals": {
-        "pig": true
+        "pig": true,
+        "escape": true
     },
     "node": true,
     "curly": true,
@@ -13,7 +14,7 @@
     "noempty": true,
     "quotmark": true,
     "undef": true,
-    "unused": true,
+    "unused": false,
     "eqnull": true,
     "browser": true
 }

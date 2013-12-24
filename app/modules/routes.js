@@ -10,7 +10,7 @@ var self = {
 
     hasToken: function (req, res, next) {
         if (req.session.account) {
-            currAccount = new Account(req.session.account, function(err, acct) {
+            currAccount = new Account(req.session.account, function(err) {
                 if (err) { next(err); return; }
                 next();
             });
