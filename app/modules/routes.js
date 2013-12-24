@@ -41,7 +41,7 @@ var self = {
         res.redirect("/main#page_deposit");
     },
 
-    showAccountSummary: function(req, res, next) {
+    showMainPage: function(req, res, next) {
         currAccount.getTransactions(
             {
                 query: null,
