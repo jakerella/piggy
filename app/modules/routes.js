@@ -42,6 +42,8 @@ var self = {
     },
 
     showMainPage: function(req, res, next) {
+        var now = new Date();
+
         currAccount.getTransactions(
             {
                 query: null,
@@ -57,10 +59,53 @@ var self = {
                     title: "Account",
                     page: "acct",
                     account: currAccount,
-                    today: (new Date()).toFormat("M/D/YYYY"),
+                    today: now.toFormat("YYYY-M-D"),
+                    monthStart: (now.getFullYear() + "-" + now.toFormat("M") + "-01"),
                     categories: Categories,
                     transactions: transactions
                 });
+            }
+        );
+    },
+
+    getAccountReport: function(req, res, next) {
+        currAccount.getTransactionTotals(
+            req.query,
+            function(err, results) {
+                var data = {
+                    type: "list",
+                    totals: {
+                        deposits: 0,
+                        expenses: 0
+                    },
+                    categories: [],
+                    transactions: []
+                };
+
+                if (!req.query.category) {
+                    data.type = "pie";
+                }
+
+                results.categoryTotals.forEach(function(category) {
+                    var total = category.total;
+
+                    category.name = Categories[category.category];
+
+                    if (category.category === 0) {
+                        total = Math.abs(category.total);
+                        data.totals.deposits += category.total;
+                    } else {
+                        data.totals.expenses += category.total;
+                    }
+
+                    data.categories.push({
+                        label: category.name,
+                        data: total
+                    });
+                });
+
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify(data));
             }
         );
     },

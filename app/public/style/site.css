@@ -1,4 +1,8 @@
 
+h4 {
+    margin: 0.2em;
+}
+
 .ui-header .ui-title {
     position: relative;
     margin: 0.6em 5% 0.8em;
@@ -26,14 +30,24 @@
     font-size: 0.8em;
 }
 
-.inlineField label.ui-input-text {
+.ui-field-contain, fieldset.ui-field-contain {
+    padding: 0.5em 0;
+}
+.inlineField label.ui-input-text, .inlineField label.ui-select {
     display: inline-block;
     vertical-align: top;
     margin-top: 0.3em;
+    width: 25%;
 }
-.inlineField div.ui-input-text {
+.inlineField div.ui-input-text, .inlineField div.ui-select {
     display: inline-block;
     margin-left: 1em;
+    width: 60%;
+    vertical-align: middle;
+}
+.inlineField.dateRange div.ui-input-text {
+    width: 25%;
+    margin-right: 0.5em;
 }
 
 .transactionDetail .deleteTrans {
@@ -53,5 +67,27 @@
 .messages .info { color: #009; }
 
 .dialogContent {
+    text-align: center;
+}
+
+#page_report form {
+    margin-top: 50px;
+}
+
+.totals {
+    text-align: center;
+}
+
+.reportChart {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.reportChart .loading {
+    background-color: #000000;
+    border-radius: 20px;
+    height: 20%;
+    padding: 45%;
     text-align: center;
 }

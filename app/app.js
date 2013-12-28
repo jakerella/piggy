@@ -46,6 +46,7 @@ app.get("/account", routes.hasToken, routes.redirectToAccountPage);
 app.get("/transaction/expense", routes.hasToken, routes.redirectToExpensePage);
 app.get("/transaction/deposit", routes.hasToken, routes.redirectToDepositPage);
 app.get("/account/login", routes.showLoginPage);
+app.get("/account/report", routes.hasToken, routes.getAccountReport);
 
 
 // POSTs

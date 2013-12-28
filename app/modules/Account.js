@@ -1,4 +1,6 @@
 
+require("date-utils");
+
 var e = require("./errors.js"),
     mongo = require("./mongo-helper.js"),
     Categories = require("../../categories.json"),
@@ -160,6 +162,8 @@ Account.prototype.deleteTransaction = function(oid, cb) {
     var amount = 0,
         self = this;
 
+    cb = (cb && cb.isFunction()) ? cb : function() {};
+
     console.log("Deleting transaction ID: " + oid);
 
     self.findTransaction(oid, function(err, transaction) {
@@ -191,6 +195,8 @@ Account.prototype.deleteTransaction = function(oid, cb) {
 Account.prototype.findTransaction = function(oid, cb) {
     var self = this;
 
+    cb = (cb && cb.isFunction()) ? cb : function() {};
+
     mongo.connect(Account.prototype, function(err, db) {
         if (err) { cb( e.getErrorObject(err) ); return; }
 
@@ -219,6 +225,7 @@ Account.prototype.findTransaction = function(oid, cb) {
 
 Account.prototype.getTransactions = function(data, cb) {
     data = (data || {});
+    cb = (cb && cb.isFunction()) ? cb : function() {};
 
     data.query = (data.query || {});
     data.query.account = this._id;
@@ -245,6 +252,68 @@ Account.prototype.getTransactions = function(data, cb) {
             });
         });
     });
+};
+
+Account.prototype.getTransactionTotals = function(data, cb) {
+    var d,
+        now = new Date(),
+        query = {};
+
+    data = (data || {});
+    cb = (cb && cb.isFunction()) ? cb : function() {};
+
+    if (data.dateStart && !Number(data.dateStart)) {
+        d = new Date(data.dateStart);
+        if (!d) {
+            d = new Date(now.getFullYear() + "-" + now.toFormat("M") + "-01");
+        }
+        data.dateStart = d.getTime();
+    } else if (!data.dateStart) {
+        d = new Date(now.getFullYear() + "-" + now.toFormat("M") + "-01");
+        data.dateStart = d.getTime();
+    }
+    if (data.dateEnd && !Number(data.dateEnd)) {
+        d = new Date(data.dateEnd);
+        if (!d) {
+            d = now;
+        }
+        data.dateEnd = d.getTime();
+    } else if (!data.dateEnd) {
+        data.dateEnd = now.getTime();
+    }
+
+    query.account = this._id;
+    query.date = { $gte: data.dateStart, $lte: data.dateEnd };
+    if (data.category) {
+        query.category = data.category;
+    }
+
+    console.log("searching for ", JSON.stringify(query));
+
+    mongo.connect(Account.prototype, function(err, db) {
+        if (err) { cb( e.getErrorObject(err) ); return; }
+
+        mongo.getOrCreateCollection(db, "transaction", function(err, coll) {
+            if (err) { cb( e.getErrorObject(err) ); return; }
+
+            coll
+            .group(
+                { "category": 1 },
+                query,
+                { total: 0 },
+                function(curr, result) { result.total += curr.amount; },
+                function(){},
+                true,
+                {},
+                function(err, results) {
+                    if (err) { cb( e.getErrorObject(err) ); return; }
+
+                    cb(null, { categoryTotals: results });
+                }
+            );
+        });
+    });
+
 };
 
 

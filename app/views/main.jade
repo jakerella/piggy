@@ -101,11 +101,35 @@ block content
                 | #{account.owner}'s account
                 span(class="amount #{balanceClass} balance") $#{account.balance.toFixed(2)}
         div(data-role="content")
-            h3 Report
-
             aside.messages
 
-            p Coming soon!
+            p.totals
+                | Deposits: 
+                span.deposits.positive
+                |  ... Expenses: 
+                span.expenses.negative
+
+            div.reportChart
+
+            div.reportTrans
+
+            form(action="/account/report", method="GET")
+                div.inlineField.dateRange(data-role="fieldcontain")
+                    label(for="dateStart") Date Range:
+                    input(name="dateStart", id="dateStart", type="date", value="#{monthStart}", placeholder="m/d/y", required, data-mini="true")
+                    | to
+                    input(name="dateEnd", id="dateEnd", type="date", value="#{today}", placeholder="m/d/y", required, data-mini="true")
+                div.inlineField(data-role="fieldcontain")
+                    label(for="filterCategory") Category
+                    select(name="category", id="filterCategory", data-native-menu="false", data-theme="b", data-mini="true")
+                        option(value="")
+                            | Any
+                        - each category, index in categories
+                            - if (index > 0)
+                                option(value="#{index}")
+                                    | #{category}
+                div.actions
+                    input(type="submit", value="Filter", data-theme="e", data-icon="arrow-r", data-iconpos="right")
             
         +footer("report")
 

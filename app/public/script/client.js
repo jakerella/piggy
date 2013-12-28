@@ -25,6 +25,27 @@
                 app.main.$acctBalance = $(".balance");
                 app.main.$recentTrans = $("div.recentTrans");
                 app.main.$confirmDelete = $("#confirmDelete");
+                app.main.$totals = $(".totals");
+                app.main.$reportChart = $(".reportChart");
+                app.main.$reportTrans = $(".reportTrans");
+                app.main.$reportDateStart = $("#dateStart");
+                app.main.$reportDateEnd = $("#dateEnd");
+                app.main.$reportCategory = $("#filterCategory");
+
+                app.main.pieOptions = {
+                    series: {
+                        pie: { 
+                            show: true,
+                            label: {
+                                show: true,
+                                formatter: app.main.pieLabelFormatter
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    }
+                };
 
                 $("form[action=\\/transaction\\/add]")
                     .on("submit", this.handleAddTransaction)
@@ -37,6 +58,11 @@
                         });
 
                 $("body").on("click", ".deleteTrans", this.handleDeleteTransaction);
+
+                $("form[action=\\/account\\/report]").on("submit", this.handleReportFilter);
+
+                // Get initial stats/report
+                app.main.getAccountReport();
             },
 
             handleAddTransaction: function(e) {
@@ -165,6 +191,79 @@
 
                 $node.remove();
                 app.alerts.success("Transaction deleted successfully!");
+            },
+
+            handleReportFilter: function(e) {
+                var start = new Date(app.main.$reportDateStart.val()),
+                    end = new Date(app.main.$reportDateEnd.val()),
+                    category = Number(app.main.$reportCategory.val());
+
+                e.preventDefault();
+
+                category = (category || null);
+                if (!start) {
+                    app.alerts.error("Please select a valid start date for filtering");
+                    return;
+                }
+                if (!end) {
+                    app.alerts.error("Please select a valid end date for filtering");
+                    return;
+                }
+
+                // app.main.$reportChart.html("<p class='loading'><img src='/style/images/ajax-loader.gif' alt='Loading' /></p>");
+                
+                app.main.getAccountReport({
+                    category: category,
+                    dateStart: app.main.$reportDateStart.val(),
+                    dateEnd: app.main.$reportDateEnd.val() + " 23:59:59"
+                });
+
+                $(this).find(".ui-submit").removeClass("ui-btn-active");
+                
+                return false;
+            },
+
+            getAccountReport: function(options) {
+                options = (options || {});
+
+                options.category = (options.category || null);
+                options.dateStart = (options.dateStart || null);
+                options.dateEnd = (options.dateEnd || null);
+
+                $.ajax({
+                    url: "/account/report",
+                    type: "get",
+                    data: options,
+                    dataType: "json",
+                    success: app.ajaxSuccess(app.main.handleReportResults, app.main.handleReportError),
+                    error: app.ajaxError(app.main.handleReportError)
+                });
+            },
+
+            handleReportResults: function(data) {
+                app.main.$totals
+                    .find(".deposits")
+                        .text("$" + data.totals.deposits)
+                        .end()
+                    .find(".expenses")
+                        .text("$" + data.totals.expenses);
+
+                if (data.type === "pie") {
+                    
+                    app.main.$reportTrans.hide();
+                    app.main.$reportChart.show();
+
+                    $.plot(app.main.$reportChart, data.categories.slice(1), app.main.pieOptions);
+                }
+            },
+
+            handleReportError: function(err) {
+                app.alerts.clearAll();
+                app.alerts.error(err);
+            },
+
+            pieLabelFormatter: function(label, series) {
+                return "<div class='pieLabel'>" + label + "<br/>$" + Math.round(series.data[0][1]) + "</div>";
             }
 
         },
