@@ -340,9 +340,10 @@ createTransaction = function(data, cb) {
 
             coll.insert(
                 data,
-                function(err, recs) {
+                function(err, result) {
                     if (err) { cb(err, null); return; }
-                    cb(null, recs[0]);
+                    console.log('Added transaction:', data, result);
+                    cb(null, data);
                     return;
                 }
             );
