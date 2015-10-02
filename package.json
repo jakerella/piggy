@@ -22,7 +22,7 @@
   "dependencies": {
     "express": "3.x",
     "jade": "0.28.x",
-    "mongodb": "1.2.x",
+    "mongodb": "1.4.x",
     "date-utils": "1.2.x",
     "winston": "0.7.x"
   }
