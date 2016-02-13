@@ -10,7 +10,10 @@ h4 {
 .ui-header .ui-title .balance {
     position: absolute;
     right: 0;
-    top: 0;
+    top: 0.5em;
+    background: #afd4cd;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
 }
 
 .ui-content h3 { text-align: center; margin-top: 0; }
@@ -19,7 +22,7 @@ h4 {
 
 .pattern-lock { margin: 0 auto; }
 
-.recentTrans .category {
+.transList .category {
     background-color: #ddd;
     color: #444;
     padding: 4px 10px;

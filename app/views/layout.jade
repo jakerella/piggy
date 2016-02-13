@@ -9,14 +9,14 @@ html
         meta(name="apple-mobile-web-app-status-bar-style", content="black")
         
         block styles
-            link(href="/style/jquery.mobile-1.4.5.min.css", rel="stylesheet", type="text/css")
+            link(href="/style/jquery.mobile.flatui.min.css", rel="stylesheet", type="text/css")
             link(href="/style/site.css", rel="stylesheet", type="text/css")
 
         mixin footer(page, linkPrefix)
-            - var theme = { account: (page==="account") ? "b" : "a", expense: (page==="expense") ? "b" : "a", deposit: (page==="deposit") ? "b" : "a", report: (page==="report") ? "b" : "a" }
+            - var theme = { account: (page==="account") ? "f" : "c", expense: (page==="expense") ? "f" : "c", deposit: (page==="deposit") ? "f" : "c", report: (page==="report") ? "f" : "c" }
             - linkPrefix = (linkPrefix || "")
             - var ajax = (linkPrefix.length) ? "false" : "true";
-            div(data-theme="a", data-role="footer", data-position="fixed")
+            div(data-theme="c", data-role="footer", data-position="fixed")
                 div(data-role="navbar", data-iconpos="top")
                     ul
                         li

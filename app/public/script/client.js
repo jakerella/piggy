@@ -253,7 +253,7 @@
                     app.main.$reportTrans.hide();
                     app.main.$reportChart.show();
 
-                    $.plot(app.main.$reportChart, data.categories.slice(0), app.main.pieOptions);
+                    $.plot(app.main.$reportChart, data.categories, app.main.pieOptions);
                 }
             },
 
