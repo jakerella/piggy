@@ -125,7 +125,7 @@ block content
                 div.inlineField(data-role="fieldcontain")
                     label(for="filterCategory") Category
                     select(name="category", id="filterCategory", data-native-menu="false", data-theme="a", data-mini="true")
-                        option(value="")
+                        option(value="null")
                             | Any
                         - each category, index in categories
                             - if (index > 0)

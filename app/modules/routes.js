@@ -88,45 +88,74 @@ var self = {
     },
 
     getAccountReport: function(req, res, next) {
-        currAccount.getTransactionTotals(
-            req.query,
-            function(err, results) {
-                var data = {
-                    type: "list",
-                    totals: {
-                        deposits: 0,
-                        expenses: 0
-                    },
-                    categories: [],
-                    transactions: []
-                };
-
-                if (!req.query.category) {
-                    data.type = "pie";
-                }
-
-                results.categoryTotals.forEach(function(category) {
-                    var total = category.total;
-
-                    category.name = Categories[category.category];
-
-                    if (category.category === 0) {
-                        total = Math.abs(category.total);
-                        data.totals.deposits += category.total;
-                    } else {
-                        data.totals.expenses += category.total;
+        var data = {
+            type: "",
+            totals: {
+                deposits: 0,
+                expenses: 0
+            },
+            categories: [],
+            transactions: []
+        };
+        
+        if (req.query.category) {
+            currAccount.getTransactions(
+                {
+                    query: req.query,
+                    options: {
+                        sort: [["date", "desc"]]
                     }
-
-                    data.categories.push({
-                        label: category.name,
-                        data: total
+                },
+                function(err, results) {
+                    if (err) { return next(err); }
+                    
+                    data.type = "list";
+                    data.transactions = results;
+                    
+                    results.forEach(function(trans) {;
+                        if (trans.amount > 0) {
+                            data.totals.deposits += trans.amount;
+                        } else {
+                            data.totals.expenses += trans.amount;
+                        }
                     });
-                });
 
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify(data));
-            }
-        );
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify(data));
+                }
+            );
+            
+        } else {
+            currAccount.getTransactionTotals(
+                req.query,
+                function(err, results) {
+                    if (err) { return next(err); }
+                    
+                    data.type = "pie";
+                    
+                    results.categoryTotals.forEach(function(category) {
+                        var total = category.total;
+
+                        category.name = Categories[category.category];
+
+                        if (category.category === 0) {
+                            total = Math.abs(category.total);
+                            data.totals.deposits += category.total;
+                        } else {
+                            data.totals.expenses += category.total;
+                        }
+
+                        data.categories.push({
+                            label: category.name,
+                            data: total
+                        });
+                    });
+
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    res.end(JSON.stringify(data));
+                }
+            );
+        }
     },
 
 

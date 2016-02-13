@@ -94,3 +94,18 @@ h4 {
     padding: 45%;
     text-align: center;
 }
+
+.reportTrans {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.reportTrans .amount {
+    width: 4em;
+    display: inline-block;
+}
+
+.reportTrans .date {
+    float: right;
+    font-style: italic;
+}

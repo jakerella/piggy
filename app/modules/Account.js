@@ -224,11 +224,29 @@ Account.prototype.findTransaction = function(oid, cb) {
 };
 
 Account.prototype.getTransactions = function(data, cb) {
+    var query = {};
+    
     data = (data || {});
     cb = (cb && cb.isFunction()) ? cb : function() {};
 
-    data.query = (data.query || {});
-    data.query.account = this._id;
+    query.account = this._id;
+    
+    dates = getQueryDateRange(data);
+    if (dates.start || dates.end) {
+        query.date = {}
+        if (dates.start) {
+            query.date.$gte = dates.start;
+        }
+        if (dates.end) {
+            query.date.$lte = dates.end;
+        }
+    }
+    
+    if (data.query && data.query.category) {
+        query.category = Number(data.query.category);
+    }
+    
+    console.info('Finding transactions', query);
 
     mongo.connect(Account.prototype, function(err, db) {
         if (err) { cb( e.getErrorObject(err) ); return; }
@@ -237,7 +255,7 @@ Account.prototype.getTransactions = function(data, cb) {
             if (err) { cb( e.getErrorObject(err) ); return; }
 
             coll
-            .find(data.query, (data.options || null))
+            .find(query, (data.options || null))
             .toArray(function(err, transactions) {
                 if (err) { cb( e.getErrorObject(err) ); return; }
 
@@ -255,37 +273,25 @@ Account.prototype.getTransactions = function(data, cb) {
 };
 
 Account.prototype.getTransactionTotals = function(data, cb) {
-    var d,
-        now = new Date(),
+    var d, dates,
         query = {};
 
     data = (data || {});
     cb = (cb && cb.isFunction()) ? cb : function() {};
-
-    if (data.dateStart && !Number(data.dateStart)) {
-        d = new Date(data.dateStart);
-        if (!d) {
-            d = new Date(now.getFullYear() + "-" + now.toFormat("M") + "-01");
-        }
-        data.dateStart = d.getTime();
-    } else if (!data.dateStart) {
-        d = new Date(now.getFullYear() + "-" + now.toFormat("M") + "-01");
-        data.dateStart = d.getTime();
-    }
-    if (data.dateEnd && !Number(data.dateEnd)) {
-        d = new Date(data.dateEnd);
-        if (!d) {
-            d = now;
-        }
-        data.dateEnd = d.getTime();
-    } else if (!data.dateEnd) {
-        data.dateEnd = now.getTime();
-    }
-
+    
     query.account = this._id;
-    query.date = { $gte: data.dateStart, $lte: data.dateEnd };
+    dates = getQueryDateRange(data);
+    if (dates.start || dates.end) {
+        query.date = {}
+        if (dates.start) {
+            query.date.$gte = dates.start;
+        }
+        if (dates.end) {
+            query.date.$lte = dates.end;
+        }
+    }
     if (data.category) {
-        query.category = data.category;
+        query.category = Number(data.category);
     }
 
     console.log("searching for ", JSON.stringify(query));
@@ -307,14 +313,43 @@ Account.prototype.getTransactionTotals = function(data, cb) {
                 {},
                 function(err, results) {
                     if (err) { cb( e.getErrorObject(err) ); return; }
-
+                    
                     cb(null, { categoryTotals: results });
                 }
             );
         });
     });
-
 };
+
+function getQueryDateRange(data) {
+    var d,
+        start = null,
+        end = null,
+        now = new Date();
+    
+    if (data.dateStart && !Number(data.dateStart)) {
+        d = new Date(data.dateStart);
+        if (!d) {
+            d = new Date(now.getFullYear() + "-" + now.toFormat("MM") + "-01");
+        }
+        start = d.getTime();
+        
+    }
+    
+    if (data.dateEnd && !Number(data.dateEnd)) {
+        d = new Date(data.dateEnd);
+        if (!d) {
+            d = now;
+        }
+        end = d.getTime();
+        
+    }
+    
+    return {
+        start: start,
+        end: end
+    };
+}
 
 
 module.exports = Account;

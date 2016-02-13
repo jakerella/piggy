@@ -259,8 +259,6 @@
                     app.alerts.error("Please select a valid end date for filtering");
                     return;
                 }
-
-                // app.main.$reportChart.html("<p class='loading'><img src='/style/images/ajax-loader.gif' alt='Loading' /></p>");
                 
                 app.main.getAccountReport({
                     category: category,
@@ -291,6 +289,9 @@
             },
 
             handleReportResults: function(data) {
+                var list = [],
+                    chartData = [];
+                
                 app.main.$totals
                     .find(".deposits")
                         .text("$" + data.totals.deposits)
@@ -299,11 +300,35 @@
                         .text("$" + data.totals.expenses);
 
                 if (data.type === "pie") {
+                    // For the pie chart we only include expenses
+                    data.categories.forEach(function(cat) {
+                        if (cat.data < 0) {
+                            chartData.push(cat);
+                        }
+                    });
                     
                     app.main.$reportTrans.hide();
                     app.main.$reportChart.show();
 
-                    $.plot(app.main.$reportChart, data.categories, app.main.pieOptions);
+                    $.plot(app.main.$reportChart, chartData, app.main.pieOptions);
+                }
+                
+                if (data.type === "list") {
+                    app.main.$reportChart.hide();
+                    
+                    list.push("<ul data-role='listview' data-theme='a' data-inset='true' data-divider-theme='a'>");
+                    data.transactions.forEach(function(trans, i) {
+                        list.push([
+                            "<li " + ((i%2) ? "data-role='list-divider'" : "") + ">",
+                            "<span class='amount'>$", trans.amount, "</span>",
+                            "<span class='description'>", trans.description, "</span>",
+                            "<span class='date' data-icon='tag'>", trans.dateDisplay, "</span>",
+                            "</li>"
+                        ].join(""));
+                    });
+                    list.push("</ul>");
+                    
+                    app.main.$reportTrans.html(list.join("")).show().find('ul').listview();
                 }
             },
 
