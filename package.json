@@ -2,17 +2,17 @@
   "name": "piggy",
   "description": "A simple account tracker (think 'piggy bank').",
   "version": "0.1.0",
+  "main": "app/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/jakerella/piggy.git"
   },
   "engines": {
-    "node": "0.10.21",
-    "npm": "1.2.x"
+    "node": "4.2.2"
   },
   "private": true,
   "scripts": {
-    "start": "node app/app.js"
+    "start": "node ."
   },
   "devDependencies": {
     "grunt": "0.4.x",

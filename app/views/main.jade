@@ -41,7 +41,7 @@ block content
             form(action="/transaction/add", method="POST")
                 div.inlineField(data-role="fieldcontain")
                     label(for="amount") Amount
-                    input.expense(name="amount", id="amount", type="text", placeholder="13.56", autofocus, required, data-mini="true")
+                    input.expense(name="amount", id="amount", type="text", placeholder="13.56", autofocus, required, data-mini="true", autocomplete="off")
                 
                 div.inlineField(data-role="fieldcontain")
                     label(for="date") Date
