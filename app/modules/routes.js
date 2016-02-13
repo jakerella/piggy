@@ -59,8 +59,8 @@ var self = {
                     title: "Account",
                     page: "acct",
                     account: currAccount,
-                    today: now.toFormat("YYYY-M-D"),
-                    monthStart: (now.getFullYear() + "-" + now.toFormat("M") + "-01"),
+                    today: now.toFormat("YYYY-MM-DD"),
+                    monthStart: (now.getFullYear() + "-" + now.toFormat("MM") + "-01"),
                     categories: Categories,
                     transactions: transactions
                 });
