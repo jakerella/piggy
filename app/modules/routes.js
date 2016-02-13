@@ -67,6 +67,25 @@ var self = {
             }
         );
     },
+    
+    findTransactions: function(req, res, next) {
+        
+        currAccount.getTransactions({
+                query: req.query.filter || null,
+                options: {
+                    skip: req.query.skip || 0,
+                    limit: req.query.limit || 10,
+                    sort: [[(req.query.sort || "date"), (req.query.sortDir || "desc")]]
+                }
+            },
+            function(err, transactions) {
+                if (err) { next(err); return; }
+                
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end(JSON.stringify(transactions));
+            }
+        );
+    },
 
     getAccountReport: function(req, res, next) {
         currAccount.getTransactionTotals(

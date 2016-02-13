@@ -56,13 +56,63 @@
                                     .find(".ui-submit")
                                         .removeClass("ui-btn-active");
                         });
-
+                
+                $("body").on("click", ".loadTrans", this.getMoreTransactions);
+                
                 $("body").on("click", ".deleteTrans", this.handleDeleteTransaction);
 
                 $("form[action=\\/account\\/report]").on("submit", this.handleReportFilter);
 
                 // Get initial stats/report
                 app.main.getAccountReport();
+            },
+            
+            getMoreTransactions: function(e) {
+                var skip,
+                    limit = 10,
+                    btn = $(this),
+                    list = $(btn.data('controls'));
+                
+                app.alerts.clearAll();
+                
+                if (!list.length) {
+                    app.alerts.error('Unable to find transaction list');
+                    btn.attr('disabled', 'disabled')
+                        .parent().removeClass('ui-btn-f').addClass('ui-btn-d');
+                }
+                
+                skip = list.find('> div').length;
+                
+                app.trans.find({
+                    skip: skip,
+                    limit: limit
+                }, {
+                    success: function(transactions) {
+                        transactions.forEach(function(t) {
+                            list
+                            .append(
+                                "<div class='transactionDetail' data-role='collapsible' data-transid='" + t._id + "'>" +
+                                "<h3>" + t.amount + " " + t.dateDisplay + "</h3>" +
+                                // this is a hack to make the button not get wrapped in a div
+                                "<a href='#' class='deleteTrans ui-link ui-btn ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all' data-role='button' data-icon='delete' data-inline='true' data-theme='a' data-iconpos='notext'>Delete</a>" +
+                                "<p class='description'>" + t.description + "</p>" +
+                                "<p class='category'>" + app.categories[t.category] + "</p>" +
+                                "</div>"
+                            )
+                            .collapsibleset("refresh");
+                        });
+                        
+                        if (transactions.length < limit) {
+                            btn.remove();
+                        }
+                    },
+                    error: function(err) {
+                        console.error('find error', err);
+                        app.alerts.error(err);
+                        btn.parent().removeClass('ui-btn-active');
+                    }
+                });
+                
             },
 
             handleAddTransaction: function(e) {
@@ -338,11 +388,23 @@
         },
 
         trans: {
+            find: function(filter, cb) {
+                console.info('Finding transactions', filter);
+                
+                $.ajax({
+                    url: "/transaction",
+                    type: "get",
+                    data: filter,
+                    dataType: "json",
+                    success: app.ajaxSuccess(cb.success, cb.error),
+                    error: app.ajaxError(cb.error)
+                });
+            },
             add: function(data, cb) {
                 var cat,
                     valid = true;
 
-                console.log("adding transaction with", data);
+                console.info("adding transaction with", data);
 
                 cb = (cb || {});
 
@@ -373,7 +435,7 @@
             },
 
             remove: function(id, cb) {
-                console.log("deleting transaction: ", id);
+                console.info("deleting transaction: ", id);
 
                 cb = (cb || {});
 

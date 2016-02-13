@@ -26,7 +26,7 @@ block content
                         p.category
                             | #{categories[trans.category]}
             
-            input(type="button", value="Load More", data-theme="f", data-icon="refresh", data-iconpos="right")
+            input.loadTrans(type="button", value="Load More", data-controls="#page_account .transList", data-theme="f", data-icon="refresh", data-iconpos="right")
             
         +footer("account")
         

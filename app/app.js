@@ -43,6 +43,7 @@ logger.info("Using Mongo URI: " + process.env.PIGGY_DB_URL);
 app.get("/", routes.hasToken, routes.showMainPage);
 app.get("/main", routes.hasToken, routes.showMainPage);
 app.get("/account", routes.hasToken, routes.redirectToAccountPage);
+app.get("/transaction", routes.hasToken, routes.findTransactions);
 app.get("/transaction/expense", routes.hasToken, routes.redirectToExpensePage);
 app.get("/transaction/deposit", routes.hasToken, routes.redirectToDepositPage);
 app.get("/account/login", routes.showLoginPage);
