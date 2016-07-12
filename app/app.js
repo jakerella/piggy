@@ -14,7 +14,7 @@ var express = require("express"),
 app.configure(function () {
     process.env.NODE_ENV = (process.env.NODE_ENV || "production");
 
-    app.set("port", process.env.PIGGY_PORT || 5000);
+    app.set("port", process.env.PORT || process.env.PIGGY_PORT || 5000);
     app.set("views", __dirname + "/views");
     app.set("view engine", "jade");
     app.use(express.bodyParser());
